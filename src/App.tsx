@@ -18,7 +18,58 @@ const properties: {
   mapUrl: string;
   agent: { name: string; phone: string; whatsapp: string };
 }[] = [
-  // 👉 Add your real properties here later
+  const properties: {
+  id: number;
+  title: string;
+  location: string;
+  price: string;
+  type: string;
+  beds: number;
+  baths: number;
+  sqft: string;
+  status: string;
+  description: string;
+  amenities: string[];
+  images: string[];
+  mapUrl: string;
+  agent: { name: string; phone: string; whatsapp: string };
+}[] = [
+  {
+    id: 1,
+    title: "Premium Farmhouse - Shamshabad",
+    location: "Near Shamshabad International Airport, Hyderabad",
+    price: "₹21,00,000",
+    type: "Farm House",
+    beds: 0,
+    baths: 0,
+    sqft: "Contact for Details",
+    status: "Available",
+    description: "Own your dream farmhouse in a prime location near Shamshabad International Airport! Situated in a fast-developing area with excellent future value. Perfect for weekend getaways or long-term investment. Clear title with safe investment guarantee. Surrounded by peaceful environment yet close to all major landmarks.",
+    amenities: [
+      "Prime Location",
+      "Peaceful Environment",
+      "Clear Title & Safe Investment",
+      "Fast Development Area",
+      "High Future Value",
+      "Perfect for Weekend Stay",
+      "Near JP Dargah",
+      "Near City Bus Limits",
+      "Near Microsoft Data Center",
+      "Near International Airport"
+    ],
+    images: [
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80",
+      "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&q=80",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80"
+    ],
+    mapUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3808.5!2d78.4294!3d17.2403!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDE0JzI1LjEiTiA3OMKwMjUnNDUuOCJF!5e0!3m2!1sen!2sin!4v1700000000000",
+    agent: {
+      name: "R.Ganesh",
+      phone: "+919849754071",
+      whatsapp: "919849754071"
+    }
+  }
+];
 ];
 
 const filterTypes = ["All", "Villa", "Apartment", "Plot", "Penthouse", "Farm House", "Commercial"];
