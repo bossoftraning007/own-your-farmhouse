@@ -8,10 +8,7 @@ const properties: {
   location: string;
   price: string;
   type: string;
-  beds: number;
-  baths: number;
-  sqft: string;
-  status: string;
+  poster: string;           // 👈 NEW - poster image
   description: string;
   amenities: string[];
   images: string[];
@@ -20,15 +17,12 @@ const properties: {
 }[] = [
   {
     id: 1,
-    title: "Premium Farmhouse - Shamshabad",
+    title: "Farmhouse Near Shamshabad Airport",
     location: "Near Shamshabad International Airport, Hyderabad",
     price: "₹21,00,000",
     type: "Farm House",
-    beds: 0,
-    baths: 0,
-    sqft: "Contact for Details",
-    status: "Available",
-    description: "Own your dream farmhouse in a prime location near Shamshabad International Airport! Situated in a fast-developing area with excellent future value. Perfect for weekend getaways or long-term investment. Clear title with safe investment guarantee. Surrounded by peaceful environment yet close to all major landmarks.",
+    poster: "/posters/property-1.jpg",   // 👈 YOUR POSTER
+    description: "Own your dream farmhouse in a prime location near Shamshabad International Airport! Situated in a fast-developing area with excellent future value. Perfect for weekend getaways or long-term investment. Clear title with safe investment guarantee.",
     amenities: [
       "Prime Location",
       "Peaceful Environment",
@@ -42,9 +36,7 @@ const properties: {
       "Near International Airport"
     ],
     images: [
-      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80",
-      "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&q=80",
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80"
+      "/posters/property-1.jpg"
     ],
     mapUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3808.5!2d78.4294!3d17.2403!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDE0JzI1LjEiTiA3OMKwMjUnNDUuOCJF!5e0!3m2!1sen!2sin!4v1700000000000",
     agent: {
@@ -74,6 +66,7 @@ function QRCode({ url, size = 150 }: { url: string; size?: number }) {
 }
 
 // ==================== PROPERTY CARD ====================
+// ==================== PROPERTY CARD (POSTER STYLE) ====================
 function PropertyCard({
   property,
   onClick,
@@ -83,86 +76,50 @@ function PropertyCard({
   onClick: () => void;
   index: number;
 }) {
-  const [imgIndex, setImgIndex] = useState(0);
-  const [isImgHovered, setIsImgHovered] = useState(false);
-
-  useEffect(() => {
-    if (!isImgHovered) return;
-    const interval = setInterval(() => {
-      setImgIndex((prev) => (prev + 1) % property.images.length);
-    }, 1200);
-    return () => clearInterval(interval);
-  }, [isImgHovered, property.images.length]);
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: index * 0.08 }}
-      whileHover={{ y: -6 }}
-      className="group cursor-pointer bg-gradient-to-b from-white/[0.06] to-white/[0.02] backdrop-blur-sm border border-white/[0.08] rounded-2xl overflow-hidden hover:border-amber-500/30 transition-all duration-500"
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      whileHover={{ y: -8, scale: 1.02 }}
+      className="group cursor-pointer relative rounded-2xl overflow-hidden border-2 border-white/10 hover:border-amber-500/50 transition-all duration-500 shadow-2xl hover:shadow-amber-500/20"
       onClick={onClick}
     >
-      <div
-        className="relative h-56 overflow-hidden"
-        onMouseEnter={() => setIsImgHovered(true)}
-        onMouseLeave={() => {
-          setIsImgHovered(false);
-          setImgIndex(0);
-        }}
-      >
-        <AnimatePresence mode="wait">
-          <motion.img
-            key={imgIndex}
-            src={property.images[imgIndex]}
-            alt={property.title}
-            className="w-full h-full object-cover"
-            initial={{ opacity: 0, scale: 1.1 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-          />
-        </AnimatePresence>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-        <div className="absolute top-3 left-3">
-          <span
-            className={`px-3 py-1 rounded-full text-[11px] font-semibold tracking-wide ${
-              property.status === "Ready to Move"
-                ? "bg-emerald-500/90 text-white"
-                : property.status === "Under Construction"
-                ? "bg-amber-500/90 text-black"
-                : "bg-blue-500/90 text-white"
-            }`}
-          >
-            {property.status}
-          </span>
+      {/* Full Poster Image */}
+      <div className="relative aspect-[3/4] overflow-hidden bg-slate-900">
+        <img
+          src={property.poster}
+          alt={property.title}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+        />
+
+        {/* Dark gradient overlay at bottom */}
+        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+
+        {/* "Click to view" overlay on hover */}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-500 flex items-center justify-center opacity-0 group-hover:opacity-100">
+          <div className="bg-amber-500 text-black px-6 py-3 rounded-full font-bold text-sm shadow-2xl transform group-hover:scale-100 scale-90 transition-all">
+            👁️ View Full Details
+          </div>
         </div>
+
+        {/* Bottom info bar */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs bg-amber-500 text-black px-2 py-1 rounded-full font-bold">
+              {property.type}
+            </span>
+            <span className="text-xs bg-emerald-500 text-white px-2 py-1 rounded-full font-semibold">
+              📞 Contact
+            </span>
+          </div>
+        </div>
+
+        {/* Top corner - NEW badge */}
         <div className="absolute top-3 right-3">
-          <span className="px-3 py-1 rounded-full text-[11px] font-medium bg-black/50 backdrop-blur-sm text-white/80 border border-white/10">
-            {property.type}
+          <span className="bg-red-500 text-white text-[10px] px-2 py-1 rounded-full font-bold animate-pulse shadow-lg">
+            🔥 HOT DEAL
           </span>
-        </div>
-        <div className="absolute bottom-3 left-3">
-          <p className="text-2xl font-bold text-white drop-shadow-lg">{property.price}</p>
-        </div>
-      </div>
-
-      <div className="p-5">
-        <h3 className="text-lg font-bold text-white mb-1.5 group-hover:text-amber-400 transition-colors">
-          {property.title}
-        </h3>
-        <div className="flex items-center gap-1.5 text-slate-400 text-sm mb-4">
-          <span className="truncate">📍 {property.location}</span>
-        </div>
-
-        <div className="flex items-center gap-4 text-sm flex-wrap">
-          {property.beds > 0 && (
-            <span className="text-slate-300">🛏️ {property.beds} Beds</span>
-          )}
-          {property.baths > 0 && (
-            <span className="text-slate-300">🚿 {property.baths} Baths</span>
-          )}
-          <span className="text-slate-300">📐 {property.sqft} sqft</span>
         </div>
       </div>
     </motion.div>
@@ -540,16 +497,16 @@ export default function App() {
               </div>
             </motion.div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filtered.map((property, i) => (
-                <PropertyCard
-                  key={property.id}
-                  property={property}
-                  index={i}
-                  onClick={() => setSelectedProperty(property)}
-                />
-              ))}
-            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+  {filtered.map((property, i) => (
+    <PropertyCard
+      key={property.id}
+      property={property}
+      index={i}
+      onClick={() => setSelectedProperty(property)}
+    />
+  ))}
+</div>
           )}
         </div>
       </section>
