@@ -1,49 +1,94 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// ==================== PROPERTIES ====================
-const properties: {
-  id: number;
-  title: string;
-  location: string;
-  price: string;
-  type: string;
-  poster: string;
-  description: string;
-  amenities: string[];
-  mapUrl: string;
-  agent: { name: string; phone: string; whatsapp: string };
-}[] = [
+// ==================== PROJECT DATA ====================
+const project = {
+  name: "Green Orchid Farm Land",
+  developer: "Bright Properties",
+  tagline: "HMDA Approved Farm Plots & Weekend Farmhouses",
+  location: "Near Kothur, JP Dargah, Bangalore Highway NH-44",
+  totalArea: "5.5 Acres",
+  totalUnits: "72 Units",
+  approval: "HMDA Approved",
+  poster: "/posters/farmhouse.jpeg",
+  gallery: [
+    "/posters/farmhouse.jpeg",
+    "/posters/layout.jpg",
+    "/posters/clubhouse.jpg",
+    "/posters/plot.jpg",
+    "/posters/bus.jpg",
+  ],
+  agent: {
+    name: "R. Ganesh",
+    designation: "Marketing Director",
+    company: "Bright Properties",
+    phone: "+919849754071",
+    whatsapp: "919849754071"
+  }
+};
+
+const propertyOptions = [
   {
     id: 1,
-    title: "Farmhouse Near Shamshabad Airport",
-    location: "Near Shamshabad International Airport, Hyderabad",
+    title: "1BHK Farmhouse",
     price: "₹21,00,000",
-    type: "Farm House",
+    plotSize: "121 sq.yards",
+    houseSize: "350 sq.ft",
+    type: "1BHK Farmhouse",
     poster: "/posters/farmhouse.jpeg",
-    description: "Own your dream farmhouse in a prime location near Shamshabad International Airport! Situated in a fast-developing area with excellent future value. Perfect for weekend getaways or long-term investment. Clear title with safe investment guarantee.",
-    amenities: [
-      "Prime Location",
-      "Peaceful Environment",
-      "Clear Title & Safe Investment",
-      "Fast Development Area",
-      "High Future Value",
-      "Perfect for Weekend Stay",
-      "Near JP Dargah",
-      "Near City Bus Limits",
-      "Near Microsoft Data Center",
-      "Near International Airport"
-    ],
-    mapUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3808.5!2d78.4294!3d17.2403!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDE0JzI1LjEiTiA3OMKwMjUnNDUuOCJF!5e0!3m2!1sen!2sin!4v1700000000000",
-    agent: {
-      name: "R.Ganesh",
-      phone: "+919849754071",
-      whatsapp: "919849754071"
-    }
+    highlight: "🔥 BEST DEAL",
+    color: "amber"
+  },
+  {
+    id: 2,
+    title: "2BHK Villa Farmhouse",
+    price: "₹35,00,000",
+    plotSize: "242 sq.yards",
+    houseSize: "350 sq.ft",
+    type: "Villa Farmhouse",
+    poster: "/posters/clubhouse.jpg",
+    highlight: "💎 PREMIUM",
+    color: "emerald"
   }
 ];
 
-const filterTypes = ["All", "Villa", "Apartment", "Plot", "Penthouse", "Farm House", "Commercial"];
+const amenities = [
+  { icon: "🏊", name: "Swimming Pool" },
+  { icon: "🏛️", name: "Club House" },
+  { icon: "🏏", name: "Cricket Net" },
+  { icon: "🎪", name: "Visitor Rooms" },
+  { icon: "🌳", name: "Fruit Plants" },
+  { icon: "🎨", name: "Children Play Area" },
+  { icon: "🚧", name: "Compound Wall" },
+  { icon: "🚪", name: "Arch Entrance Gate" },
+  { icon: "🛣️", name: "30 Feet Roads" },
+  { icon: "🔒", name: "24/7 Security" },
+  { icon: "🏘️", name: "Gated Community" },
+  { icon: "🌿", name: "Park Area" }
+];
+
+const furniture = [
+  "🛏️ Bed", "🌀 Fans", "🍽️ Dining Table", "📺 LED TV",
+  "❄️ Fridge", "🔥 Barbecue", "🛋️ Sofa Set", "🪑 4 Chairs"
+];
+
+const locationHighlights = [
+  { icon: "🕌", place: "JP Dargah", distance: "1 km" },
+  { icon: "💻", place: "Microsoft Data Center", distance: "2 km" },
+  { icon: "🏘️", place: "Kothur Town", distance: "7 mins drive" },
+  { icon: "✈️", place: "Shamshabad Airport", distance: "15 mins drive" },
+  { icon: "🛣️", place: "ORR Exit 16", distance: "15 mins drive" },
+  { icon: "🏢", place: "Gachibowli IT SEZ", distance: "30 mins drive" }
+];
+
+const legalPoints = [
+  "✅ HMDA Approved Layout",
+  "✅ Sale Deed with MRO",
+  "✅ Spot Registration Available",
+  "✅ Telangana Government Pattadar Pass Book",
+  "✅ Clear Title & Safe Investment",
+  "✅ 2 Years FREE Maintenance"
+];
 
 // ==================== QR CODE ====================
 function QRCode({ url, size = 150 }: { url: string; size?: number }) {
@@ -56,249 +101,115 @@ function QRCode({ url, size = 150 }: { url: string; size?: number }) {
         height={size}
         className="rounded-xl border-2 border-white/10"
       />
-      <p className="text-xs text-slate-400">Scan to view property</p>
+      <p className="text-xs text-slate-400">Scan to visit site</p>
     </div>
   );
 }
 
-// ==================== PROPERTY CARD (POSTER STYLE) ====================
-function PropertyCard({
-  property,
-  onClick,
-  index,
-}: {
-  property: (typeof properties)[0];
-  onClick: () => void;
-  index: number;
-}) {
+// ==================== GALLERY LIGHTBOX ====================
+function Lightbox({ images, startIndex, onClose }: { images: string[]; startIndex: number; onClose: () => void }) {
+  const [index, setIndex] = useState(startIndex);
+
+  const next = () => setIndex((index + 1) % images.length);
+  const prev = () => setIndex((index - 1 + images.length) % images.length);
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      whileHover={{ y: -8, scale: 1.02 }}
-      className="group cursor-pointer relative rounded-2xl overflow-hidden border-2 border-white/10 hover:border-amber-500/50 transition-all duration-500 shadow-2xl hover:shadow-amber-500/20"
-      onClick={onClick}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center"
+      onClick={onClose}
     >
-      <div className="relative aspect-[3/4] overflow-hidden bg-slate-900">
-        <img
-          src={property.poster}
-          alt={property.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-        />
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 z-10 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white text-xl"
+      >
+        ✕
+      </button>
 
-        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+      <button
+        onClick={(e) => { e.stopPropagation(); prev(); }}
+        className="absolute left-4 z-10 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white text-2xl"
+      >
+        ‹
+      </button>
 
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-500 flex items-center justify-center opacity-0 group-hover:opacity-100">
-          <div className="bg-amber-500 text-black px-6 py-3 rounded-full font-bold text-sm shadow-2xl">
-            👁️ View Full Details
-          </div>
-        </div>
+      <img
+        src={images[index]}
+        alt=""
+        className="max-w-[90vw] max-h-[90vh] object-contain"
+        onClick={(e) => e.stopPropagation()}
+      />
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-xs bg-amber-500 text-black px-2 py-1 rounded-full font-bold">
-              {property.type}
-            </span>
-            <span className="text-xs bg-emerald-500 text-white px-2 py-1 rounded-full font-semibold">
-              📞 Contact
-            </span>
-          </div>
-        </div>
+      <button
+        onClick={(e) => { e.stopPropagation(); next(); }}
+        className="absolute right-4 z-10 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white text-2xl"
+      >
+        ›
+      </button>
 
-        <div className="absolute top-3 right-3">
-          <span className="bg-red-500 text-white text-[10px] px-2 py-1 rounded-full font-bold animate-pulse shadow-lg">
-            🔥 HOT DEAL
-          </span>
-        </div>
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/50 text-white px-4 py-2 rounded-full text-sm">
+        {index + 1} / {images.length}
       </div>
     </motion.div>
   );
 }
 
-// ==================== PROPERTY DETAIL MODAL ====================
-function PropertyDetail({
-  property,
-  onClose,
-}: {
-  property: (typeof properties)[0];
-  onClose: () => void;
-}) {
-  const [showQR, setShowQR] = useState(false);
-
+// ==================== FLOATING BUTTONS ====================
+function FloatingButtons() {
   return (
-    <motion.div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
-
-      <motion.div
-        className="relative z-10 w-full max-w-4xl mx-4 my-8 bg-gradient-to-b from-slate-900 to-slate-950 rounded-3xl border border-white/10 overflow-hidden"
-        initial={{ y: 50, opacity: 0, scale: 0.95 }}
-        animate={{ y: 0, opacity: 1, scale: 1 }}
-        exit={{ y: 50, opacity: 0, scale: 0.95 }}
-        transition={{ type: "spring", damping: 25, stiffness: 200 }}
+    <div className="fixed bottom-4 right-4 z-40 flex flex-col gap-3">
+      <a
+        href={`https://wa.me/${project.agent.whatsapp}?text=Hi, I'm interested in Green Orchid Farm Land`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="w-14 h-14 bg-emerald-500 hover:bg-emerald-400 rounded-full flex items-center justify-center shadow-2xl shadow-emerald-500/50 hover:scale-110 transition-all animate-pulse"
       >
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-20 w-10 h-10 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center text-white/70 hover:text-white hover:bg-black/70 transition-all border border-white/10"
-        >
-          ✕
-        </button>
-
-        {/* Full poster image at top */}
-        <div className="relative w-full bg-slate-900">
-          <img
-            src={property.poster}
-            alt={property.title}
-            className="w-full h-auto max-h-[600px] object-contain"
-          />
-        </div>
-
-        <div className="p-6 sm:p-8">
-          <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                  Available
-                </span>
-                <span className="px-3 py-1 rounded-full text-[11px] font-medium bg-white/5 text-white/60 border border-white/10">
-                  {property.type}
-                </span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">{property.title}</h2>
-              <div className="text-slate-400">📍 {property.location}</div>
-            </div>
-            <div className="text-right">
-              <p className="text-3xl font-bold text-amber-400">{property.price}</p>
-            </div>
-          </div>
-
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-white mb-3">About This Property</h3>
-            <p className="text-slate-400 leading-relaxed">{property.description}</p>
-          </div>
-
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-white mb-3">Key Features</h3>
-            <div className="flex flex-wrap gap-2">
-              {property.amenities.map((amenity) => (
-                <span
-                  key={amenity}
-                  className="px-3 py-1.5 bg-white/[0.04] border border-white/[0.08] rounded-lg text-sm text-slate-300"
-                >
-                  ✓ {amenity}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-white mb-3">Location on Map</h3>
-            <div className="rounded-xl overflow-hidden border border-white/10 h-64">
-              <iframe
-                src={property.mapUrl}
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1 flex flex-col gap-3">
-              <h3 className="text-lg font-semibold text-white mb-1">Contact Agent</h3>
-              <p className="text-slate-400 text-sm mb-2">{property.agent.name}</p>
-              <a
-                href={`tel:${property.agent.phone}`}
-                className="flex items-center justify-center gap-3 px-5 py-3 bg-amber-500 hover:bg-amber-400 text-black rounded-xl font-semibold transition-all"
-              >
-                📞 Call Now
-              </a>
-              <a
-                href={`https://wa.me/${property.agent.whatsapp}?text=Hi, I'm interested in ${property.title}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-3 px-5 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-semibold transition-all"
-              >
-                💬 WhatsApp
-              </a>
-              <button
-                onClick={() => setShowQR(!showQR)}
-                className="flex items-center justify-center gap-3 px-5 py-3 bg-white/[0.06] hover:bg-white/[0.1] text-white rounded-xl font-semibold border border-white/10 transition-all"
-              >
-                {showQR ? "Hide" : "Show"} QR Code
-              </button>
-            </div>
-
-            <AnimatePresence>
-              {showQR && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  className="flex items-center justify-center p-6 bg-slate-800/50 rounded-xl border border-white/10"
-                >
-                  <QRCode url={`https://own-your-farmhouse.vercel.app`} size={160} />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
+        <span className="text-2xl">💬</span>
+      </a>
+      <a
+        href={`tel:${project.agent.phone}`}
+        className="w-14 h-14 bg-amber-500 hover:bg-amber-400 rounded-full flex items-center justify-center shadow-2xl shadow-amber-500/50 hover:scale-110 transition-all"
+      >
+        <span className="text-2xl">📞</span>
+      </a>
+    </div>
   );
 }
 
 // ==================== MAIN APP ====================
 export default function App() {
-  const [selectedProperty, setSelectedProperty] = useState<(typeof properties)[0] | null>(null);
-  const [activeFilter, setActiveFilter] = useState("All");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [showQR, setShowQR] = useState(false);
   const propertiesRef = useRef<HTMLDivElement>(null);
+  const galleryRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    document.body.style.overflow = selectedProperty ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [selectedProperty]);
-
-  const filtered = properties.filter((p) => {
-    const matchesFilter = activeFilter === "All" || p.type === activeFilter;
-    const matchesSearch =
-      p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.location.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
-
-  const scrollToProperties = () => {
-    propertiesRef.current?.scrollIntoView({ behavior: "smooth" });
+  const scrollTo = (ref: React.RefObject<HTMLDivElement>) => {
+    ref.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       {/* NAVBAR */}
-      <nav className="fixed top-0 left-0 right-0 z-40 bg-slate-950/80 backdrop-blur-xl border-b border-white/[0.06]">
+      <nav className="fixed top-0 left-0 right-0 z-40 bg-slate-950/80 backdrop-blur-xl border-b border-emerald-500/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center font-bold text-black text-lg">
-              R
+            <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center font-bold text-white text-lg">
+              🌿
             </div>
             <div>
-              <span className="text-base sm:text-lg font-bold tracking-tight">OWN YOUR FARMHOUSE</span>
+              <span className="text-base sm:text-lg font-bold tracking-tight block leading-tight">GREEN ORCHID</span>
+              <span className="text-[10px] sm:text-xs text-emerald-400 tracking-wider">FARM LAND</span>
             </div>
           </div>
           <a
-            href="https://wa.me/919505903371"
+            href={`https://wa.me/${project.agent.whatsapp}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm bg-emerald-600 hover:bg-emerald-500 rounded-full font-medium transition-all"
+            className="flex items-center gap-2 px-3 sm:px-5 py-2 text-xs sm:text-sm bg-emerald-600 hover:bg-emerald-500 rounded-full font-medium transition-all"
           >
-            💬 WhatsApp
+            💬 <span className="hidden sm:inline">Enquire Now</span>
           </a>
         </div>
       </nav>
@@ -307,163 +218,417 @@ export default function App() {
       <section className="relative min-h-screen flex items-center overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80"
-            alt="Luxury Property"
+            src="/posters/clubhouse.jpg"
+            alt="Green Orchid Farm Land"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-slate-950/40" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/85 to-slate-950/40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-32 pb-20 w-full">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-20 w-full">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="max-w-3xl"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-full text-amber-400 text-sm mb-8">
-              <span className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
-              Trusted Since 2005
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-emerald-400 text-xs sm:text-sm mb-6">
+              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+              HMDA APPROVED • 72 UNITS • 5.5 ACRES
             </div>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight mb-6">
-              Own Your
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight mb-4">
+              Green Orchid
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500">
-                Dream Farmhouse
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-green-300 to-emerald-500">
+                Farm Land
               </span>
-              <br />
-              in Hyderabad
             </h1>
 
-            <p className="text-lg sm:text-xl text-slate-400 max-w-lg mb-10 leading-relaxed">
-              Premium farmhouses, plots & properties. 20+ years of trust.
+            <p className="text-base sm:text-lg text-slate-300 max-w-xl mb-3 leading-relaxed">
+              Own your weekend farmhouse near Kothur, just minutes from Shamshabad Airport & IT Hub.
+            </p>
+            <p className="text-emerald-400 font-semibold text-lg mb-8">
+              🎪 OFFER: Starting from ₹21 Lakhs Only! 🎪
             </p>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-3 sm:gap-4">
               <button
-                onClick={scrollToProperties}
-                className="px-7 py-3.5 bg-amber-500 hover:bg-amber-400 text-black rounded-full font-semibold text-base transition-all hover:scale-105"
+                onClick={() => scrollTo(propertiesRef)}
+                className="px-6 sm:px-7 py-3 sm:py-3.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full font-semibold text-sm sm:text-base transition-all hover:scale-105 shadow-lg shadow-emerald-500/30"
               >
-                View Properties →
+                View Farmhouses →
               </button>
               <a
-                href="tel:+919505903371"
-                className="px-7 py-3.5 bg-white/[0.06] hover:bg-white/[0.1] text-white rounded-full font-semibold text-base border border-white/10 transition-all hover:scale-105"
+                href={`tel:${project.agent.phone}`}
+                className="px-6 sm:px-7 py-3 sm:py-3.5 bg-white/10 hover:bg-white/20 text-white rounded-full font-semibold text-sm sm:text-base border border-white/20 transition-all hover:scale-105"
               >
-                📞 Call Us
+                📞 Call {project.agent.name}
               </a>
             </div>
 
-            <div className="flex flex-wrap gap-8 sm:gap-12 mt-16 pt-8 border-t border-white/[0.06]">
-              {[
-                { value: "500+", label: "Properties Sold" },
-                { value: "20+", label: "Years Experience" },
-                { value: "98%", label: "Happy Clients" },
-              ].map((stat) => (
-                <div key={stat.label}>
-                  <p className="text-3xl font-bold text-amber-400">{stat.value}</p>
-                  <p className="text-sm text-slate-500 mt-1">{stat.label}</p>
-                </div>
-              ))}
+            <div className="grid grid-cols-3 gap-4 sm:gap-8 mt-12 sm:mt-16 pt-8 border-t border-white/10">
+              <div>
+                <p className="text-2xl sm:text-3xl font-bold text-emerald-400">5.5</p>
+                <p className="text-xs sm:text-sm text-slate-400 mt-1">Acres</p>
+              </div>
+              <div>
+                <p className="text-2xl sm:text-3xl font-bold text-emerald-400">72</p>
+                <p className="text-xs sm:text-sm text-slate-400 mt-1">Units</p>
+              </div>
+              <div>
+                <p className="text-2xl sm:text-3xl font-bold text-emerald-400">2 Yr</p>
+                <p className="text-xs sm:text-sm text-slate-400 mt-1">Free Maintenance</p>
+              </div>
             </div>
           </motion.div>
         </div>
       </section>
 
       {/* PROPERTIES */}
-      <section ref={propertiesRef} className="relative py-20 sm:py-28 px-4 sm:px-6">
+      <section ref={propertiesRef} className="relative py-16 sm:py-24 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-14">
-            <p className="text-amber-400 text-sm tracking-[0.2em] uppercase mb-4">Our Portfolio</p>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <p className="text-emerald-400 text-sm tracking-[0.2em] uppercase mb-3">Choose Your Home</p>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">
-              Featured Properties
+              Available Farmhouses
             </h2>
-            <p className="text-slate-500 max-w-lg mx-auto">
-              Handpicked premium properties across Hyderabad.
+            <p className="text-slate-400 max-w-xl mx-auto">
+              Fully furnished farmhouses with premium amenities. All units come with Bed, TV, Fridge, Sofa & more!
             </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+            {propertyOptions.map((prop, i) => (
+              <motion.div
+                key={prop.id}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.15 }}
+                whileHover={{ y: -8 }}
+                className="group relative rounded-2xl overflow-hidden border-2 border-white/10 hover:border-emerald-500/50 transition-all shadow-2xl"
+              >
+                <div className="relative aspect-[4/5] overflow-hidden bg-slate-900">
+                  <img
+                    src={prop.poster}
+                    alt={prop.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black via-black/70 to-transparent" />
+
+                  <div className="absolute top-4 right-4">
+                    <span className={`bg-${prop.color}-500 text-white text-xs px-3 py-1.5 rounded-full font-bold shadow-lg animate-pulse`}>
+                      {prop.highlight}
+                    </span>
+                  </div>
+
+                  <div className="absolute bottom-0 left-0 right-0 p-6">
+                    <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2">{prop.title}</h3>
+                    <p className="text-4xl sm:text-5xl font-bold text-emerald-400 mb-4">{prop.price}</p>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      <span className="text-xs bg-white/10 backdrop-blur-sm text-white px-3 py-1.5 rounded-full border border-white/20">
+                        📐 {prop.plotSize}
+                      </span>
+                      <span className="text-xs bg-white/10 backdrop-blur-sm text-white px-3 py-1.5 rounded-full border border-white/20">
+                        🏠 {prop.houseSize}
+                      </span>
+                    </div>
+                    <div className="flex gap-2">
+                      <a
+                        href={`tel:${project.agent.phone}`}
+                        className="flex-1 bg-emerald-500 hover:bg-emerald-400 text-white text-center py-2.5 rounded-full font-semibold text-sm transition-all"
+                      >
+                        📞 Call
+                      </a>
+                      <a
+                        href={`https://wa.me/${project.agent.whatsapp}?text=Hi, interested in ${prop.title} at Green Orchid`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-center py-2.5 rounded-full font-semibold text-sm transition-all"
+                      >
+                        💬 WhatsApp
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
 
-          {properties.length > 0 && (
-            <div className="flex flex-col sm:flex-row gap-4 mb-10">
-              <div className="relative flex-1 max-w-md">
-                <input
-                  type="text"
-                  placeholder="🔍 Search by name or location..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-xl text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-500/40 transition-all"
-                />
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                {filterTypes.map((type) => (
-                  <button
-                    key={type}
-                    onClick={() => setActiveFilter(type)}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                      activeFilter === type
-                        ? "bg-amber-500 text-black"
-                        : "bg-white/[0.04] text-slate-400 hover:bg-white/[0.08] hover:text-white border border-white/[0.06]"
-                    }`}
-                  >
-                    {type}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {properties.length === 0 ? (
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-center py-20 px-6 bg-gradient-to-b from-white/[0.03] to-transparent border border-white/[0.06] border-dashed rounded-3xl"
-            >
-              <div className="text-6xl mb-6">🏗️</div>
-              <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3">
-                Properties Coming Soon
-              </h3>
-              <p className="text-slate-400 max-w-md mx-auto mb-8">
-                We're curating a premium collection of properties. Contact us directly for exclusive early access.
-              </p>
-            </motion.div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filtered.map((property, i) => (
-                <PropertyCard
-                  key={property.id}
-                  property={property}
-                  index={i}
-                  onClick={() => setSelectedProperty(property)}
-                />
+          {/* Furniture Included */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-10 p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl"
+          >
+            <h3 className="text-lg sm:text-xl font-bold mb-4 text-emerald-400">✨ Fully Furnished — Included with Every Farmhouse</h3>
+            <div className="flex flex-wrap gap-2">
+              {furniture.map((item) => (
+                <span key={item} className="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm">
+                  {item}
+                </span>
               ))}
             </div>
-          )}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* GALLERY */}
+      <section ref={galleryRef} className="relative py-16 sm:py-24 px-4 sm:px-6 bg-slate-900/50">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <p className="text-emerald-400 text-sm tracking-[0.2em] uppercase mb-3">Project Gallery</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">
+              See Green Orchid In Real
+            </h2>
+            <p className="text-slate-400 max-w-xl mx-auto">
+              Tap any photo to view in full screen
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+            {project.gallery.map((img, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                whileHover={{ scale: 1.02 }}
+                onClick={() => setLightboxIndex(i)}
+                className={`relative overflow-hidden rounded-xl cursor-pointer border border-white/10 hover:border-emerald-500/50 transition-all ${
+                  i === 0 ? "col-span-2 row-span-2 aspect-square" : "aspect-square"
+                }`}
+              >
+                <img
+                  src={img}
+                  alt=""
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-black/0 hover:bg-black/30 transition-all flex items-center justify-center opacity-0 hover:opacity-100">
+                  <span className="text-white bg-black/60 px-4 py-2 rounded-full text-sm font-semibold">
+                    🔍 View
+                  </span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* AMENITIES */}
+      <section className="relative py-16 sm:py-24 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <p className="text-emerald-400 text-sm tracking-[0.2em] uppercase mb-3">World Class Amenities</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">
+              Everything You Need
+            </h2>
+          </motion.div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+            {amenities.map((a, i) => (
+              <motion.div
+                key={a.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05 }}
+                className="p-4 sm:p-5 bg-white/[0.03] border border-white/10 rounded-xl hover:border-emerald-500/30 hover:bg-emerald-500/5 transition-all"
+              >
+                <div className="text-3xl mb-2">{a.icon}</div>
+                <p className="text-sm sm:text-base font-medium">{a.name}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* LOCATION */}
+      <section className="relative py-16 sm:py-24 px-4 sm:px-6 bg-slate-900/50">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <p className="text-emerald-400 text-sm tracking-[0.2em] uppercase mb-3">Prime Location</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">
+              Everything Nearby
+            </h2>
+            <p className="text-slate-400 max-w-xl mx-auto">
+              📍 Shamshabad to Kothur, Bangalore Highway NH-44, Inmulanarva Village
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+            {locationHighlights.map((loc, i) => (
+              <motion.div
+                key={loc.place}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="p-5 bg-gradient-to-br from-emerald-500/10 to-transparent border border-emerald-500/20 rounded-xl flex items-center gap-4"
+              >
+                <div className="text-4xl">{loc.icon}</div>
+                <div>
+                  <p className="font-semibold text-white">{loc.place}</p>
+                  <p className="text-emerald-400 text-sm">{loc.distance}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Map */}
+          <div className="rounded-2xl overflow-hidden border border-white/10 h-64 sm:h-96">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3808.5!2d78.4294!3d17.2403!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDE0JzI1LjEiTiA3OMKwMjUnNDUuOCJF!5e0!3m2!1sen!2sin!4v1700000000000"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* LEGAL */}
+      <section className="relative py-16 sm:py-24 px-4 sm:px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <p className="text-emerald-400 text-sm tracking-[0.2em] uppercase mb-3">100% Safe Investment</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-8">
+              Legal & Documentation
+            </h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {legalPoints.map((point, i) => (
+                <motion.div
+                  key={point}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl text-left"
+                >
+                  <p className="text-base font-medium">{point}</p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* CONTACT CTA */}
+      <section className="relative py-16 sm:py-24 px-4 sm:px-6 bg-gradient-to-b from-emerald-900/30 to-slate-950">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">
+              Ready to Own Your Farmhouse?
+            </h2>
+            <p className="text-lg text-slate-300 mb-2">Contact us today for site visit</p>
+            <p className="text-emerald-400 font-semibold mb-8">🎪 Limited Time Offer - Only Few Units Left! 🎪</p>
+
+            <div className="inline-block p-6 sm:p-8 bg-white/5 border border-white/10 rounded-2xl mb-6">
+              <p className="text-2xl font-bold mb-1">{project.agent.name}</p>
+              <p className="text-emerald-400 text-sm mb-4">{project.agent.designation}, {project.agent.company}</p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <a
+                  href={`tel:${project.agent.phone}`}
+                  className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full font-bold text-lg transition-all hover:scale-105 shadow-lg shadow-emerald-500/30"
+                >
+                  📞 {project.agent.phone}
+                </a>
+                <a
+                  href={`https://wa.me/${project.agent.whatsapp}?text=Hi, I want to book site visit for Green Orchid Farm Land`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-full font-bold text-lg transition-all hover:scale-105"
+                >
+                  💬 WhatsApp
+                </a>
+              </div>
+            </div>
+
+            <div className="mt-8">
+              <button
+                onClick={() => setShowQR(!showQR)}
+                className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-sm font-medium transition-all"
+              >
+                {showQR ? "Hide" : "Show"} QR Code to Share
+              </button>
+              <AnimatePresence>
+                {showQR && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mt-6 flex justify-center"
+                  >
+                    <QRCode url="https://own-your-farmhouse.vercel.app" size={180} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.div>
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer className="border-t border-white/[0.06] py-12 px-4 sm:px-6">
+      <footer className="border-t border-white/10 py-8 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto text-center">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <span className="text-2xl">🌿</span>
+            <span className="font-bold">GREEN ORCHID FARM LAND</span>
+          </div>
           <p className="text-slate-500 text-sm">
-            © 2025 OWN YOUR FARMHOUSE. All rights reserved.
+            © 2025 Bright Properties. All rights reserved.
           </p>
           <p className="text-slate-600 text-xs mt-2">
-            Hyderabad, Telangana • +91 9505903371
-          </p>
-          <p className="text-slate-600 text-xs mt-1">
-            Contact: R.Ganesh
+            Near Kothur, JP Dargah, Hyderabad • R. Ganesh - {project.agent.phone}
           </p>
         </div>
       </footer>
 
+      {/* FLOATING BUTTONS */}
+      <FloatingButtons />
+
+      {/* LIGHTBOX */}
       <AnimatePresence>
-        {selectedProperty && (
-          <PropertyDetail
-            property={selectedProperty}
-            onClose={() => setSelectedProperty(null)}
+        {lightboxIndex !== null && (
+          <Lightbox
+            images={project.gallery}
+            startIndex={lightboxIndex}
+            onClose={() => setLightboxIndex(null)}
           />
         )}
       </AnimatePresence>
