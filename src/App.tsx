@@ -18,22 +18,6 @@ const properties: {
   mapUrl: string;
   agent: { name: string; phone: string; whatsapp: string };
 }[] = [
-  const properties: {
-  id: number;
-  title: string;
-  location: string;
-  price: string;
-  type: string;
-  beds: number;
-  baths: number;
-  sqft: string;
-  status: string;
-  description: string;
-  amenities: string[];
-  images: string[];
-  mapUrl: string;
-  agent: { name: string; phone: string; whatsapp: string };
-}[] = [
   {
     id: 1,
     title: "Premium Farmhouse - Shamshabad",
@@ -69,7 +53,6 @@ const properties: {
       whatsapp: "919849754071"
     }
   }
-];
 ];
 
 const filterTypes = ["All", "Villa", "Apartment", "Plot", "Penthouse", "Farm House", "Commercial"];
