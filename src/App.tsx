@@ -20,7 +20,7 @@ const properties: {
     location: "Near Shamshabad International Airport, Hyderabad",
     price: "₹21,00,000",
     type: "Farm House",
-    poster: "/posters/property-1.jpg",
+    poster: "/posters/farmhouse.jpeg",
     description: "Own your dream farmhouse in a prime location near Shamshabad International Airport! Situated in a fast-developing area with excellent future value. Perfect for weekend getaways or long-term investment. Clear title with safe investment guarantee.",
     amenities: [
       "Prime Location",
