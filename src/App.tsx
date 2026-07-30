@@ -1,17 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// ==================== PROPERTIES (EMPTY - Add real ones here) ====================
+// ==================== PROPERTIES ====================
 const properties: {
   id: number;
   title: string;
   location: string;
   price: string;
   type: string;
-  poster: string;           // 👈 NEW - poster image
+  poster: string;
   description: string;
   amenities: string[];
-  images: string[];
   mapUrl: string;
   agent: { name: string; phone: string; whatsapp: string };
 }[] = [
@@ -21,7 +20,7 @@ const properties: {
     location: "Near Shamshabad International Airport, Hyderabad",
     price: "₹21,00,000",
     type: "Farm House",
-    poster: "/posters/property-1.jpg",   // 👈 YOUR POSTER
+    poster: "/posters/property-1.jpg",
     description: "Own your dream farmhouse in a prime location near Shamshabad International Airport! Situated in a fast-developing area with excellent future value. Perfect for weekend getaways or long-term investment. Clear title with safe investment guarantee.",
     amenities: [
       "Prime Location",
@@ -34,9 +33,6 @@ const properties: {
       "Near City Bus Limits",
       "Near Microsoft Data Center",
       "Near International Airport"
-    ],
-    images: [
-      "/posters/property-1.jpg"
     ],
     mapUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3808.5!2d78.4294!3d17.2403!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDE0JzI1LjEiTiA3OMKwMjUnNDUuOCJF!5e0!3m2!1sen!2sin!4v1700000000000",
     agent: {
@@ -65,7 +61,6 @@ function QRCode({ url, size = 150 }: { url: string; size?: number }) {
   );
 }
 
-// ==================== PROPERTY CARD ====================
 // ==================== PROPERTY CARD (POSTER STYLE) ====================
 function PropertyCard({
   property,
@@ -85,7 +80,6 @@ function PropertyCard({
       className="group cursor-pointer relative rounded-2xl overflow-hidden border-2 border-white/10 hover:border-amber-500/50 transition-all duration-500 shadow-2xl hover:shadow-amber-500/20"
       onClick={onClick}
     >
-      {/* Full Poster Image */}
       <div className="relative aspect-[3/4] overflow-hidden bg-slate-900">
         <img
           src={property.poster}
@@ -93,17 +87,14 @@ function PropertyCard({
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
         />
 
-        {/* Dark gradient overlay at bottom */}
         <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
 
-        {/* "Click to view" overlay on hover */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-500 flex items-center justify-center opacity-0 group-hover:opacity-100">
-          <div className="bg-amber-500 text-black px-6 py-3 rounded-full font-bold text-sm shadow-2xl transform group-hover:scale-100 scale-90 transition-all">
+          <div className="bg-amber-500 text-black px-6 py-3 rounded-full font-bold text-sm shadow-2xl">
             👁️ View Full Details
           </div>
         </div>
 
-        {/* Bottom info bar */}
         <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
           <div className="flex items-center justify-between mb-1">
             <span className="text-xs bg-amber-500 text-black px-2 py-1 rounded-full font-bold">
@@ -115,7 +106,6 @@ function PropertyCard({
           </div>
         </div>
 
-        {/* Top corner - NEW badge */}
         <div className="absolute top-3 right-3">
           <span className="bg-red-500 text-white text-[10px] px-2 py-1 rounded-full font-bold animate-pulse shadow-lg">
             🔥 HOT DEAL
@@ -134,7 +124,6 @@ function PropertyDetail({
   property: (typeof properties)[0];
   onClose: () => void;
 }) {
-  const [activeImg, setActiveImg] = useState(0);
   const [showQR, setShowQR] = useState(false);
 
   return (
@@ -160,33 +149,13 @@ function PropertyDetail({
           ✕
         </button>
 
-        <div className="relative h-72 sm:h-96">
-          <AnimatePresence mode="wait">
-            <motion.img
-              key={activeImg}
-              src={property.images[activeImg]}
-              alt={property.title}
-              className="w-full h-full object-cover"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            />
-          </AnimatePresence>
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent" />
-          <div className="absolute bottom-4 left-4 flex gap-2">
-            {property.images.map((img, i) => (
-              <button
-                key={i}
-                onClick={() => setActiveImg(i)}
-                className={`w-16 h-12 rounded-lg overflow-hidden border-2 transition-all ${
-                  i === activeImg ? "border-amber-500 scale-105" : "border-white/20 opacity-60 hover:opacity-100"
-                }`}
-              >
-                <img src={img} alt="" className="w-full h-full object-cover" />
-              </button>
-            ))}
-          </div>
+        {/* Full poster image at top */}
+        <div className="relative w-full bg-slate-900">
+          <img
+            src={property.poster}
+            alt={property.title}
+            className="w-full h-auto max-h-[600px] object-contain"
+          />
         </div>
 
         <div className="p-6 sm:p-8">
@@ -194,7 +163,7 @@ function PropertyDetail({
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                  {property.status}
+                  Available
                 </span>
                 <span className="px-3 py-1 rounded-full text-[11px] font-medium bg-white/5 text-white/60 border border-white/10">
                   {property.type}
@@ -208,32 +177,13 @@ function PropertyDetail({
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-6 p-4 bg-white/[0.03] rounded-xl border border-white/[0.06] mb-6">
-            {property.beds > 0 && (
-              <div>
-                <p className="text-white font-semibold">🛏️ {property.beds}</p>
-                <p className="text-slate-500 text-xs">Bedrooms</p>
-              </div>
-            )}
-            {property.baths > 0 && (
-              <div>
-                <p className="text-white font-semibold">🚿 {property.baths}</p>
-                <p className="text-slate-500 text-xs">Bathrooms</p>
-              </div>
-            )}
-            <div>
-              <p className="text-white font-semibold">📐 {property.sqft}</p>
-              <p className="text-slate-500 text-xs">Sq. Ft.</p>
-            </div>
-          </div>
-
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-white mb-3">About This Property</h3>
             <p className="text-slate-400 leading-relaxed">{property.description}</p>
           </div>
 
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-white mb-3">Amenities</h3>
+            <h3 className="text-lg font-semibold text-white mb-3">Key Features</h3>
             <div className="flex flex-wrap gap-2">
               {property.amenities.map((amenity) => (
                 <span
@@ -247,7 +197,7 @@ function PropertyDetail({
           </div>
 
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-white mb-3">Location</h3>
+            <h3 className="text-lg font-semibold text-white mb-3">Location on Map</h3>
             <div className="rounded-xl overflow-hidden border border-white/10 h-64">
               <iframe
                 src={property.mapUrl}
@@ -294,7 +244,7 @@ function PropertyDetail({
                   exit={{ opacity: 0, scale: 0.8 }}
                   className="flex items-center justify-center p-6 bg-slate-800/50 rounded-xl border border-white/10"
                 >
-                  <QRCode url={`https://yoursite.com/property/${property.id}`} size={160} />
+                  <QRCode url={`https://own-your-farmhouse.vercel.app`} size={160} />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -377,17 +327,17 @@ export default function App() {
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight mb-6">
-              Find Your
+              Own Your
               <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500">
-                Dream Property
+                Dream Farmhouse
               </span>
               <br />
               in Hyderabad
             </h1>
 
             <p className="text-lg sm:text-xl text-slate-400 max-w-lg mb-10 leading-relaxed">
-              Premium villas, apartments, plots & commercial spaces. 20+ years of trust.
+              Premium farmhouses, plots & properties. 20+ years of trust.
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -464,7 +414,6 @@ export default function App() {
             </div>
           )}
 
-          {/* Empty state OR property grid */}
           {properties.length === 0 ? (
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -479,34 +428,18 @@ export default function App() {
               <p className="text-slate-400 max-w-md mx-auto mb-8">
                 We're curating a premium collection of properties. Contact us directly for exclusive early access.
               </p>
-              <div className="flex flex-wrap justify-center gap-3">
-                <a
-                  href="tel:+919505903371"
-                  className="px-6 py-3 bg-amber-500 hover:bg-amber-400 text-black rounded-full font-semibold transition-all hover:scale-105"
-                >
-                  📞 Call Now
-                </a>
-                <a
-                  href="https://wa.me/919505903371?text=Hi, I want to know about your properties"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-full font-semibold transition-all hover:scale-105"
-                >
-                  💬 WhatsApp Us
-                </a>
-              </div>
             </motion.div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-  {filtered.map((property, i) => (
-    <PropertyCard
-      key={property.id}
-      property={property}
-      index={i}
-      onClick={() => setSelectedProperty(property)}
-    />
-  ))}
-</div>
+              {filtered.map((property, i) => (
+                <PropertyCard
+                  key={property.id}
+                  property={property}
+                  index={i}
+                  onClick={() => setSelectedProperty(property)}
+                />
+              ))}
+            </div>
           )}
         </div>
       </section>
