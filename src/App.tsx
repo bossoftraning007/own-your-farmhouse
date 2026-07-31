@@ -52,21 +52,7 @@ const properties: Property[] = [
       "Gated Community",
     ],
   },
-  {
-    id: 2,
-    name: "2BHK Villa Farmhouse",
-    price: "₹35,00,000",
-    plot: "242 sq.yards",
-    house: "350 sq.ft",
-    bhk: "2BHK",
-    emoji: "🏡",
-    features: [
-      "HMDA Approved",
-      "Fully Furnished",
-      "2 Year Free Maintenance",
-      "Premium Villa",
-    ],
-  },
+  
 ];
 
 const galleryImages: GalleryImage[] = [
@@ -101,16 +87,7 @@ const nearbyPlaces: NearbyPlace[] = [
   { icon: "🏢", place: "Gachibowli IT SEZ", distance: "30 mins drive" },
 ];
 
-const furnitureItems: string[] = [
-  "🛏️ Bed",
-  "💨 Fans",
-  "🍽️ Dining Table",
-  "📺 LED TV",
-  "❄️ Fridge",
-  "🔥 Barbecue",
-  "🛋️ Sofa",
-  "🪑 4 Chairs",
-];
+
 
 const legalDocs: string[] = [
   "✅ HMDA Approved",
@@ -359,248 +336,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* ===== FURNITURE INCLUDED BANNER ===== */}
-      <section className="py-16 px-4 bg-emerald-950/30 border-y border-emerald-900/30">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-10"
-          >
-            <h2 className="text-3xl font-bold text-white mb-2">
-              🛋️ Fully{" "}
-              <span className="text-emerald-400">Furnished</span> — Included!
-            </h2>
-            <p className="text-slate-400">
-              Everything you need is already inside. Just move in! 🎉
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {furnitureItems.map((item, index) => (
-              <motion.div
-                key={item}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.08 }}
-                className="bg-slate-900 border border-emerald-900/40 rounded-xl p-4 text-center hover:border-emerald-500/50 transition-all"
-              >
-                <p className="text-white font-medium text-sm">{item}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== GALLERY SECTION ===== */}
-      <section className="py-20 px-4 max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
-            📸 <span className="text-emerald-400">Gallery</span>
-          </h2>
-          <p className="text-slate-400">
-            Click any image to view it bigger! 🔍
-          </p>
-        </motion.div>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {galleryImages.map((image, index) => (
-            <motion.div
-              key={image.src}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              whileHover={{ scale: 1.03 }}
-              onClick={() => openLightbox(index)}
-              className={`relative cursor-pointer rounded-2xl overflow-hidden border border-emerald-900/40 hover:border-emerald-500/50 transition-all ${
-                index === 0 ? "col-span-2 md:col-span-1 row-span-1" : ""
-              }`}
-            >
-              <img
-                src={image.src}
-                alt={image.alt}
-                className="w-full h-48 md:h-56 object-cover"
-                onError={(e) => {
-                  // Show placeholder if image fails to load
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = "none";
-                }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent" />
-              <div className="absolute bottom-3 left-3">
-                <span className="text-white font-medium text-sm">
-                  {image.label}
-                </span>
-              </div>
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity bg-slate-950/40">
-                <span className="text-white text-3xl">🔍</span>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* ===== LIGHTBOX ===== */}
-      <AnimatePresence>
-        {lightboxOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-slate-950/95 flex items-center justify-center p-4"
-            onClick={closeLightbox}
-          >
-            <motion.div
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
-              className="relative max-w-4xl w-full"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <img
-                src={galleryImages[activeImage].src}
-                alt={galleryImages[activeImage].alt}
-                className="w-full max-h-[80vh] object-contain rounded-2xl"
-              />
-
-              {/* Close */}
-              <button
-                onClick={closeLightbox}
-                className="absolute top-4 right-4 bg-slate-800 hover:bg-slate-700 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl"
-              >
-                ✕
-              </button>
-
-              {/* Prev */}
-              <button
-                onClick={prevImage}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-slate-800 hover:bg-emerald-700 text-white w-10 h-10 rounded-full flex items-center justify-center"
-              >
-                ←
-              </button>
-
-              {/* Next */}
-              <button
-                onClick={nextImage}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-slate-800 hover:bg-emerald-700 text-white w-10 h-10 rounded-full flex items-center justify-center"
-              >
-                →
-              </button>
-
-              {/* Image Label */}
-              <p className="text-center text-slate-300 mt-4 text-sm">
-                {galleryImages[activeImage].label} — {activeImage + 1} /{" "}
-                {galleryImages.length}
-              </p>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ===== AMENITIES SECTION ===== */}
-      <section className="py-20 px-4 bg-slate-900/50">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
-              ✨ World-Class{" "}
-              <span className="text-emerald-400">Amenities</span>
-            </h2>
-            <p className="text-slate-400">
-              Everything you need for the perfect farmhouse life!
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {amenities.map((amenity, index) => (
-              <motion.div
-                key={amenity.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.07 }}
-                whileHover={{ scale: 1.05 }}
-                className="bg-slate-900 border border-emerald-900/40 rounded-2xl p-5 text-center hover:border-emerald-500/50 transition-all"
-              >
-                <span className="text-4xl block mb-3">{amenity.icon}</span>
-                <p className="text-white font-medium text-sm">{amenity.name}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== LOCATION SECTION ===== */}
-      <section className="py-20 px-4 max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
-            📍 Prime <span className="text-emerald-400">Location</span>
-          </h2>
-          <p className="text-slate-400">
-            Near Kothur, JP Dargah, Bangalore Highway NH-44, Hyderabad
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* Nearby Places */}
-          <div className="grid grid-cols-1 gap-3">
-            {nearbyPlaces.map((place, index) => (
-              <motion.div
-                key={place.place}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-slate-900 border border-emerald-900/40 rounded-xl p-4 flex items-center justify-between hover:border-emerald-500/50 transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">{place.icon}</span>
-                  <span className="text-white font-medium">{place.place}</span>
-                </div>
-                <span className="bg-emerald-500/20 text-emerald-400 text-sm px-3 py-1 rounded-full">
-                  {place.distance}
-                </span>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Google Maps Embed */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="rounded-2xl overflow-hidden border border-emerald-900/40 min-h-[300px]"
-          >
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30455.955851817747!2d78.08!3d17.08!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDA0JzQ4LjAiTiA3OMKwMDQnNDguMCJF!5e0!3m2!1sen!2sin!4v1234567890"
-              width="100%"
-              height="100%"
-              style={{ minHeight: "300px", border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="Green Orchid Farm Land Location"
-            />
-          </motion.div>
-        </div>
-      </section>
+      
 
       {/* ===== LEGAL DOCUMENTATION SECTION ===== */}
       <section className="py-16 px-4 bg-emerald-950/20 border-y border-emerald-900/30">
@@ -695,12 +431,16 @@ export default function App() {
 
                 {/* QR Code Placeholder */}
                 <div className="bg-slate-800 border border-emerald-900/40 rounded-2xl p-6 text-center">
-                  <div className="w-32 h-32 bg-white rounded-xl flex items-center justify-center mb-3">
-                    <span className="text-4xl">📱</span>
-                  </div>
-                  <p className="text-slate-400 text-xs">
-                    Scan to WhatsApp Us
-                  </p>
+  <div className="w-36 h-36 bg-white rounded-xl flex items-center justify-center mb-3 p-2">
+    <img
+      src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=https://wa.me/919505903371"
+      alt="WhatsApp QR Code"
+      className="w-full h-full rounded-lg"
+    />
+  </div>
+  <p className="text-slate-400 text-xs">📱 Scan to WhatsApp Us</p>
+  <p className="text-emerald-400 text-xs font-bold mt-1">+91 9505903371</p>
+</div>
                 </div>
               </div>
             </div>
