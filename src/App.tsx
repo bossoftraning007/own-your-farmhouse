@@ -1,485 +1,807 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// ==================== PROJECT DATA ====================
-const project = {
-  name: "Green Orchid Farm Land",
-  developer: "Bright Properties",
-  location: "Near Kothur, JP Dargah, Bangalore Highway NH-44",
-  poster: "/posters/farmhouse.jpeg",
-  gallery: [
-    "/posters/farmhouse.jpeg",
-    "/posters/layout.jpg",
-    "/posters/clubhouse.jpg",
-    "/posters/plot.jpg",
-    "/posters/bus.jpg",
-  ],
-  agent: {
-    name: "R. Ganesh",
-    designation: "Marketing Director",
-    company: "Bright Properties",
-    phone: "+919505903371",
-    whatsapp: "919505903371"
-  }
-};
+// ============================================
+// 🏡 OWN YOUR FARMHOUSE — Green Orchid Farm Land
+// Built by: Student Dev for Dad's Business 💚
+// ============================================
 
-const propertyOptions = [
+// ---------- TYPE DEFINITIONS ----------
+interface Property {
+  id: number;
+  name: string;
+  price: string;
+  plot: string;
+  house: string;
+  bhk: string;
+  emoji: string;
+  features: string[];
+}
+
+interface GalleryImage {
+  src: string;
+  alt: string;
+  label: string;
+}
+
+interface Amenity {
+  icon: string;
+  name: string;
+}
+
+interface NearbyPlace {
+  icon: string;
+  place: string;
+  distance: string;
+}
+
+// ---------- DATA ----------
+const properties: Property[] = [
   {
     id: 1,
-    title: "1BHK Farmhouse",
+    name: "1BHK Farmhouse",
     price: "₹21,00,000",
-    plotSize: "121 sq.yards",
-    houseSize: "350 sq.ft",
-    poster: "/posters/farmhouse.jpeg",
-    highlight: "🔥 BEST DEAL",
-    highlightColor: "bg-amber-500"
+    plot: "121 sq.yards",
+    house: "350 sq.ft",
+    bhk: "1BHK",
+    emoji: "🏠",
+    features: [
+      "HMDA Approved",
+      "Fully Furnished",
+      "2 Year Free Maintenance",
+      "Gated Community",
+    ],
   },
   {
     id: 2,
-    title: "2BHK Villa Farmhouse",
+    name: "2BHK Villa Farmhouse",
     price: "₹35,00,000",
-    plotSize: "242 sq.yards",
-    houseSize: "350 sq.ft",
-    poster: "/posters/clubhouse.jpg",
-    highlight: "💎 PREMIUM",
-    highlightColor: "bg-emerald-500"
-  }
+    plot: "242 sq.yards",
+    house: "350 sq.ft",
+    bhk: "2BHK",
+    emoji: "🏡",
+    features: [
+      "HMDA Approved",
+      "Fully Furnished",
+      "2 Year Free Maintenance",
+      "Premium Villa",
+    ],
+  },
 ];
 
-const amenities = [
+const galleryImages: GalleryImage[] = [
+  { src: "/posters/farmhouse.jpeg", alt: "Farmhouse View", label: "🏡 Farmhouse" },
+  { src: "/posters/bus.jpg.jpeg", alt: "Bus Facility", label: "🚌 Transport" },
+  { src: "/posters/clubhouse.jpg.jpeg", alt: "Club House", label: "🏊 Club House" },
+  { src: "/posters/layout.jpg.png", alt: "Layout Plan", label: "🗺️ Layout" },
+  { src: "/posters/plot.jpg.jpeg", alt: "Plot View", label: "🌿 Plot" },
+];
+
+const amenities: Amenity[] = [
   { icon: "🏊", name: "Swimming Pool" },
-  { icon: "🏛️", name: "Club House" },
+  { icon: "🏠", name: "Club House" },
   { icon: "🏏", name: "Cricket Net" },
-  { icon: "🎪", name: "Visitor Rooms" },
+  { icon: "🛏️", name: "Visitor Rooms" },
   { icon: "🌳", name: "Fruit Plants" },
-  { icon: "🎨", name: "Children Play Area" },
-  { icon: "🚧", name: "Compound Wall" },
+  { icon: "🛝", name: "Children Play Area" },
+  { icon: "🧱", name: "Compound Wall" },
   { icon: "🚪", name: "Arch Entrance Gate" },
-  { icon: "🛣️", name: "30 Feet Roads" },
+  { icon: "🛣️", name: "30ft Wide Roads" },
   { icon: "🔒", name: "24/7 Security" },
   { icon: "🏘️", name: "Gated Community" },
-  { icon: "🌿", name: "Park Area" }
+  { icon: "🌲", name: "Park Area" },
 ];
 
-const furniture = [
-  "🛏️ Bed", "🌀 Fans", "🍽️ Dining Table", "📺 LED TV",
-  "❄️ Fridge", "🔥 Barbecue", "🛋️ Sofa Set", "🪑 4 Chairs"
-];
-
-const locationHighlights = [
+const nearbyPlaces: NearbyPlace[] = [
   { icon: "🕌", place: "JP Dargah", distance: "1 km" },
   { icon: "💻", place: "Microsoft Data Center", distance: "2 km" },
-  { icon: "🏘️", place: "Kothur Town", distance: "7 mins drive" },
+  { icon: "🏙️", place: "Kothur Town", distance: "7 mins drive" },
   { icon: "✈️", place: "Shamshabad Airport", distance: "15 mins drive" },
   { icon: "🛣️", place: "ORR Exit 16", distance: "15 mins drive" },
-  { icon: "🏢", place: "Gachibowli IT SEZ", distance: "30 mins drive" }
+  { icon: "🏢", place: "Gachibowli IT SEZ", distance: "30 mins drive" },
 ];
 
-const legalPoints = [
-  "✅ HMDA Approved Layout",
-  "✅ Sale Deed with MRO",
-  "✅ Spot Registration Available",
-  "✅ Telangana Government Pattadar Pass Book",
-  "✅ Clear Title & Safe Investment",
-  "✅ 2 Years FREE Maintenance"
+const furnitureItems: string[] = [
+  "🛏️ Bed",
+  "💨 Fans",
+  "🍽️ Dining Table",
+  "📺 LED TV",
+  "❄️ Fridge",
+  "🔥 Barbecue",
+  "🛋️ Sofa",
+  "🪑 4 Chairs",
 ];
 
-// ==================== QR CODE ====================
-function QRCode({ url, size = 150 }: { url: string; size?: number }) {
-  return (
-    <div className="flex flex-col items-center gap-3">
-      <img
-        src={`https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(url)}&bgcolor=0f172a&color=ffffff&format=svg`}
-        alt="QR Code"
-        width={size}
-        height={size}
-        className="rounded-xl border-2 border-white/10"
-      />
-      <p className="text-xs text-slate-400">Scan to visit site</p>
-    </div>
-  );
-}
+const legalDocs: string[] = [
+  "✅ HMDA Approved",
+  "📜 Sale Deed with MRO",
+  "📍 Spot Registration",
+  "📗 Telangana Pattadar Pass Book",
+];
 
-// ==================== LIGHTBOX ====================
-function Lightbox({ images, startIndex, onClose }: { images: string[]; startIndex: number; onClose: () => void }) {
-  const [index, setIndex] = useState(startIndex);
-  const next = () => setIndex((index + 1) % images.length);
-  const prev = () => setIndex((index - 1 + images.length) % images.length);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center"
-      onClick={onClose}
-    >
-      <button onClick={onClose} className="absolute top-4 right-4 z-10 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white text-xl">✕</button>
-      <button onClick={(e) => { e.stopPropagation(); prev(); }} className="absolute left-4 z-10 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white text-2xl">‹</button>
-      <img src={images[index]} alt="" className="max-w-[90vw] max-h-[90vh] object-contain" onClick={(e) => e.stopPropagation()} />
-      <button onClick={(e) => { e.stopPropagation(); next(); }} className="absolute right-4 z-10 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white text-2xl">›</button>
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/50 text-white px-4 py-2 rounded-full text-sm">{index + 1} / {images.length}</div>
-    </motion.div>
-  );
-}
-
-// ==================== FLOATING BUTTONS ====================
-function FloatingButtons() {
-  return (
-    <div className="fixed bottom-4 right-4 z-40 flex flex-col gap-3">
-      <a
-        href={`https://wa.me/${project.agent.whatsapp}?text=Hi, I'm interested in Green Orchid Farm Land`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="w-14 h-14 bg-emerald-500 hover:bg-emerald-400 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all"
-      >
-        <span className="text-2xl">💬</span>
-      </a>
-      <a
-        href={`tel:${project.agent.phone}`}
-        className="w-14 h-14 bg-amber-500 hover:bg-amber-400 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all"
-      >
-        <span className="text-2xl">📞</span>
-      </a>
-    </div>
-  );
-}
-
-// ==================== MAIN APP ====================
+// ---------- MAIN APP ----------
 export default function App() {
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const [showQR, setShowQR] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [activeImage, setActiveImage] = useState(0);
   const propertiesRef = useRef<HTMLDivElement>(null);
+  const contactRef = useRef<HTMLDivElement>(null);
 
-  const scrollTo = (ref: React.RefObject<HTMLDivElement | null>) => {
-  ref.current?.scrollIntoView({ behavior: "smooth" });
-};
+  const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
+    ref.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const openLightbox = (index: number) => {
+    setActiveImage(index);
+    setLightboxOpen(true);
+  };
+
+  const closeLightbox = () => setLightboxOpen(false);
+
+  const prevImage = () =>
+    setActiveImage((prev) =>
+      prev === 0 ? galleryImages.length - 1 : prev - 1
+    );
+
+  const nextImage = () =>
+    setActiveImage((prev) =>
+      prev === galleryImages.length - 1 ? 0 : prev + 1
+    );
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
-      {/* NAVBAR */}
-      <nav className="fixed top-0 left-0 right-0 z-40 bg-slate-950/80 backdrop-blur-xl border-b border-emerald-500/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center font-bold text-white text-lg">
-              🌿
-            </div>
+    <div className="bg-slate-950 text-white min-h-screen font-sans">
+      {/* ===== NAVBAR ===== */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-emerald-900/30">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">🌿</span>
             <div>
-              <span className="text-base sm:text-lg font-bold tracking-tight block leading-tight">GREEN ORCHID</span>
-              <span className="text-[10px] sm:text-xs text-emerald-400 tracking-wider">FARM LAND</span>
+              <p className="text-emerald-400 font-bold text-sm leading-none">
+                OWN YOUR FARMHOUSE
+              </p>
+              <p className="text-slate-400 text-xs">Bright Properties</p>
             </div>
           </div>
+
+          {/* Nav Links — hidden on mobile */}
+          <div className="hidden md:flex items-center gap-6 text-sm text-slate-300">
+            <button
+              onClick={() => scrollToSection(propertiesRef)}
+              className="hover:text-emerald-400 transition-colors"
+            >
+              Properties
+            </button>
+            <button
+              onClick={() => scrollToSection(contactRef)}
+              className="hover:text-emerald-400 transition-colors"
+            >
+              Contact
+            </button>
+          </div>
+
+          {/* WhatsApp Button */}
           <a
-            href={`https://wa.me/${project.agent.whatsapp}`}
+            href="https://wa.me/919505903371"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-3 sm:px-5 py-2 text-xs sm:text-sm bg-emerald-600 hover:bg-emerald-500 rounded-full font-medium transition-all"
+            className="bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-semibold px-4 py-2 rounded-full transition-all flex items-center gap-2"
           >
-            💬 <span className="hidden sm:inline">Enquire Now</span>
+            <span>💬</span>
+            <span className="hidden sm:inline">WhatsApp Us</span>
           </a>
         </div>
       </nav>
 
-      {/* HERO */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
-        <div className="absolute inset-0">
-          <img src="/posters/clubhouse.jpg" alt="Green Orchid" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/85 to-slate-950/40" />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
-        </div>
+      {/* ===== HERO SECTION ===== */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/posters/clubhouse.jpg.jpeg')" }}
+        />
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-slate-950/70" />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-20 w-full">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-emerald-400 text-xs sm:text-sm mb-6">
-              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-              HMDA APPROVED • 72 UNITS • 5.5 ACRES
-            </div>
+        {/* Hero Content */}
+        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <span className="inline-block bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-sm px-4 py-1 rounded-full mb-6">
+              🌿 HMDA Approved — Near Kothur, Hyderabad
+            </span>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight mb-4">
-              Green Orchid
-              <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-green-300 to-emerald-500">
-                Farm Land
-              </span>
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight">
+              Green Orchid{" "}
+              <span className="text-emerald-400">Farm Land</span>
             </h1>
 
-            <p className="text-base sm:text-lg text-slate-300 max-w-xl mb-3 leading-relaxed">
-              Own your weekend farmhouse near Kothur, just minutes from Shamshabad Airport & IT Hub.
-            </p>
-            <p className="text-emerald-400 font-semibold text-lg mb-8">
-              🎪 OFFER: Starting from ₹21 Lakhs Only! 🎪
+            <p className="text-slate-300 text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+              Your dream farmhouse awaits 🏡 — Fully furnished, gated
+              community, with swimming pool & club house on Bangalore Highway
+              NH-44
             </p>
 
-            <div className="flex flex-wrap gap-3 sm:gap-4">
-              <button
-                onClick={() => scrollTo(propertiesRef)}
-                className="px-6 sm:px-7 py-3 sm:py-3.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full font-semibold text-sm sm:text-base transition-all hover:scale-105 shadow-lg shadow-emerald-500/30"
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => scrollToSection(propertiesRef)}
+                className="bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-8 py-3 rounded-full transition-all"
               >
-                View Farmhouses →
-              </button>
-              <a
-                href={`tel:${project.agent.phone}`}
-                className="px-6 sm:px-7 py-3 sm:py-3.5 bg-white/10 hover:bg-white/20 text-white rounded-full font-semibold text-sm sm:text-base border border-white/20 transition-all hover:scale-105"
+                🏠 View Properties
+              </motion.button>
+              <motion.a
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                href="https://wa.me/919505903371"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-emerald-500 text-emerald-400 hover:bg-emerald-500/10 font-bold px-8 py-3 rounded-full transition-all"
               >
-                📞 Call {project.agent.name}
-              </a>
+                💬 Chat on WhatsApp
+              </motion.a>
             </div>
 
-            <div className="grid grid-cols-3 gap-4 sm:gap-8 mt-12 sm:mt-16 pt-8 border-t border-white/10">
-              <div>
-                <p className="text-2xl sm:text-3xl font-bold text-emerald-400">5.5</p>
-                <p className="text-xs sm:text-sm text-slate-400 mt-1">Acres</p>
-              </div>
-              <div>
-                <p className="text-2xl sm:text-3xl font-bold text-emerald-400">72</p>
-                <p className="text-xs sm:text-sm text-slate-400 mt-1">Units</p>
-              </div>
-              <div>
-                <p className="text-2xl sm:text-3xl font-bold text-emerald-400">2 Yr</p>
-                <p className="text-xs sm:text-sm text-slate-400 mt-1">Free Maintenance</p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* PROPERTIES */}
-      <section ref={propertiesRef} className="relative py-16 sm:py-24 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto">
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-            <p className="text-emerald-400 text-sm tracking-[0.2em] uppercase mb-3">Choose Your Home</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">Available Farmhouses</h2>
-            <p className="text-slate-400 max-w-xl mx-auto">Fully furnished farmhouses with premium amenities.</p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-            {propertyOptions.map((prop, i) => (
-              <motion.div
-                key={prop.id}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.15 }}
-                whileHover={{ y: -8 }}
-                className="group relative rounded-2xl overflow-hidden border-2 border-white/10 hover:border-emerald-500/50 transition-all shadow-2xl"
-              >
-                <div className="relative aspect-[4/5] overflow-hidden bg-slate-900">
-                  <img src={prop.poster} alt={prop.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                  <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black via-black/70 to-transparent" />
-
-                  <div className="absolute top-4 right-4">
-                    <span className={`${prop.highlightColor} text-white text-xs px-3 py-1.5 rounded-full font-bold shadow-lg`}>
-                      {prop.highlight}
-                    </span>
-                  </div>
-
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2">{prop.title}</h3>
-                    <p className="text-4xl sm:text-5xl font-bold text-emerald-400 mb-4">{prop.price}</p>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      <span className="text-xs bg-white/10 backdrop-blur-sm text-white px-3 py-1.5 rounded-full border border-white/20">
-                        📐 {prop.plotSize}
-                      </span>
-                      <span className="text-xs bg-white/10 backdrop-blur-sm text-white px-3 py-1.5 rounded-full border border-white/20">
-                        🏠 {prop.houseSize}
-                      </span>
-                    </div>
-                    <div className="flex gap-2">
-                      <a href={`tel:${project.agent.phone}`} className="flex-1 bg-emerald-500 hover:bg-emerald-400 text-white text-center py-2.5 rounded-full font-semibold text-sm transition-all">
-                        📞 Call
-                      </a>
-                      <a href={`https://wa.me/${project.agent.whatsapp}?text=Hi, interested in ${prop.title}`} target="_blank" rel="noopener noreferrer" className="flex-1 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-center py-2.5 rounded-full font-semibold text-sm transition-all">
-                        💬 WhatsApp
-                      </a>
-                    </div>
-                  </div>
+            {/* Quick Stats */}
+            <div className="mt-12 grid grid-cols-3 gap-4 max-w-md mx-auto">
+              {[
+                { label: "Total Units", value: "72" },
+                { label: "Total Acres", value: "5.5" },
+                { label: "Maintenance", value: "2 Yrs Free" },
+              ].map((stat) => (
+                <div
+                  key={stat.label}
+                  className="bg-white/10 backdrop-blur-sm rounded-xl p-3"
+                >
+                  <p className="text-emerald-400 font-bold text-xl">
+                    {stat.value}
+                  </p>
+                  <p className="text-slate-300 text-xs">{stat.label}</p>
                 </div>
-              </motion.div>
-            ))}
-          </div>
-
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-10 p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl">
-            <h3 className="text-lg sm:text-xl font-bold mb-4 text-emerald-400">✨ Fully Furnished — Included with Every Farmhouse</h3>
-            <div className="flex flex-wrap gap-2">
-              {furniture.map((item) => (
-                <span key={item} className="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm">{item}</span>
               ))}
             </div>
           </motion.div>
         </div>
+
+        {/* Scroll Indicator */}
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ repeat: Infinity, duration: 2 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-slate-400 text-2xl"
+        >
+          ↓
+        </motion.div>
       </section>
 
-      {/* GALLERY */}
-      <section className="relative py-16 sm:py-24 px-4 sm:px-6 bg-slate-900/50">
+      {/* ===== PROPERTIES SECTION ===== */}
+      <section ref={propertiesRef} className="py-20 px-4 max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+            🏠 Our <span className="text-emerald-400">Properties</span>
+          </h2>
+          <p className="text-slate-400 max-w-xl mx-auto">
+            Choose your perfect farmhouse — both options are fully furnished &
+            HMDA approved!
+          </p>
+        </motion.div>
+
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          {properties.map((property, index) => (
+            <motion.div
+              key={property.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: index * 0.2 }}
+              whileHover={{ y: -8 }}
+              className="bg-slate-900 border border-emerald-900/40 rounded-2xl overflow-hidden hover:border-emerald-500/50 transition-all"
+            >
+              {/* Card Header */}
+              <div className="bg-gradient-to-br from-emerald-900/40 to-slate-900 p-6 text-center">
+                <span className="text-6xl">{property.emoji}</span>
+                <h3 className="text-xl font-bold text-white mt-3">
+                  {property.name}
+                </h3>
+                <p className="text-3xl font-bold text-emerald-400 mt-2">
+                  {property.price}
+                </p>
+              </div>
+
+              {/* Card Details */}
+              <div className="p-6">
+                <div className="grid grid-cols-2 gap-3 mb-6">
+                  <div className="bg-slate-800 rounded-xl p-3 text-center">
+                    <p className="text-slate-400 text-xs">Plot Size</p>
+                    <p className="text-white font-semibold text-sm">
+                      {property.plot}
+                    </p>
+                  </div>
+                  <div className="bg-slate-800 rounded-xl p-3 text-center">
+                    <p className="text-slate-400 text-xs">House Size</p>
+                    <p className="text-white font-semibold text-sm">
+                      {property.house}
+                    </p>
+                  </div>
+                </div>
+
+                <ul className="space-y-2 mb-6">
+                  {property.features.map((feature) => (
+                    <li
+                      key={feature}
+                      className="flex items-center gap-2 text-slate-300 text-sm"
+                    >
+                      <span className="text-emerald-400">✓</span>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+
+                <a
+                  href="https://wa.me/919505903371"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-center bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 rounded-xl transition-all"
+                >
+                  💬 Enquire Now
+                </a>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* ===== FURNITURE INCLUDED BANNER ===== */}
+      <section className="py-16 px-4 bg-emerald-950/30 border-y border-emerald-900/30">
         <div className="max-w-7xl mx-auto">
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-            <p className="text-emerald-400 text-sm tracking-[0.2em] uppercase mb-3">Project Gallery</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">See Green Orchid In Real</h2>
-            <p className="text-slate-400 max-w-xl mx-auto">Tap any photo to view in full screen</p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-10"
+          >
+            <h2 className="text-3xl font-bold text-white mb-2">
+              🛋️ Fully{" "}
+              <span className="text-emerald-400">Furnished</span> — Included!
+            </h2>
+            <p className="text-slate-400">
+              Everything you need is already inside. Just move in! 🎉
+            </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-            {project.gallery.map((img, i) => (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {furnitureItems.map((item, index) => (
               <motion.div
-                key={i}
+                key={item}
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                whileHover={{ scale: 1.02 }}
-                onClick={() => setLightboxIndex(i)}
-                className={`relative overflow-hidden rounded-xl cursor-pointer border border-white/10 hover:border-emerald-500/50 transition-all ${
-                  i === 0 ? "col-span-2 row-span-2 aspect-square" : "aspect-square"
-                }`}
+                transition={{ delay: index * 0.08 }}
+                className="bg-slate-900 border border-emerald-900/40 rounded-xl p-4 text-center hover:border-emerald-500/50 transition-all"
               >
-                <img src={img} alt="" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                <p className="text-white font-medium text-sm">{item}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* AMENITIES */}
-      <section className="relative py-16 sm:py-24 px-4 sm:px-6">
+      {/* ===== GALLERY SECTION ===== */}
+      <section className="py-20 px-4 max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+            📸 <span className="text-emerald-400">Gallery</span>
+          </h2>
+          <p className="text-slate-400">
+            Click any image to view it bigger! 🔍
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {galleryImages.map((image, index) => (
+            <motion.div
+              key={image.src}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ scale: 1.03 }}
+              onClick={() => openLightbox(index)}
+              className={`relative cursor-pointer rounded-2xl overflow-hidden border border-emerald-900/40 hover:border-emerald-500/50 transition-all ${
+                index === 0 ? "col-span-2 md:col-span-1 row-span-1" : ""
+              }`}
+            >
+              <img
+                src={image.src}
+                alt={image.alt}
+                className="w-full h-48 md:h-56 object-cover"
+                onError={(e) => {
+                  // Show placeholder if image fails to load
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = "none";
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent" />
+              <div className="absolute bottom-3 left-3">
+                <span className="text-white font-medium text-sm">
+                  {image.label}
+                </span>
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity bg-slate-950/40">
+                <span className="text-white text-3xl">🔍</span>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* ===== LIGHTBOX ===== */}
+      <AnimatePresence>
+        {lightboxOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-slate-950/95 flex items-center justify-center p-4"
+            onClick={closeLightbox}
+          >
+            <motion.div
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+              className="relative max-w-4xl w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={galleryImages[activeImage].src}
+                alt={galleryImages[activeImage].alt}
+                className="w-full max-h-[80vh] object-contain rounded-2xl"
+              />
+
+              {/* Close */}
+              <button
+                onClick={closeLightbox}
+                className="absolute top-4 right-4 bg-slate-800 hover:bg-slate-700 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl"
+              >
+                ✕
+              </button>
+
+              {/* Prev */}
+              <button
+                onClick={prevImage}
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-slate-800 hover:bg-emerald-700 text-white w-10 h-10 rounded-full flex items-center justify-center"
+              >
+                ←
+              </button>
+
+              {/* Next */}
+              <button
+                onClick={nextImage}
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-slate-800 hover:bg-emerald-700 text-white w-10 h-10 rounded-full flex items-center justify-center"
+              >
+                →
+              </button>
+
+              {/* Image Label */}
+              <p className="text-center text-slate-300 mt-4 text-sm">
+                {galleryImages[activeImage].label} — {activeImage + 1} /{" "}
+                {galleryImages.length}
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ===== AMENITIES SECTION ===== */}
+      <section className="py-20 px-4 bg-slate-900/50">
         <div className="max-w-7xl mx-auto">
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-            <p className="text-emerald-400 text-sm tracking-[0.2em] uppercase mb-3">World Class Amenities</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">Everything You Need</h2>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+              ✨ World-Class{" "}
+              <span className="text-emerald-400">Amenities</span>
+            </h2>
+            <p className="text-slate-400">
+              Everything you need for the perfect farmhouse life!
+            </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
-            {amenities.map((a, i) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            {amenities.map((amenity, index) => (
               <motion.div
-                key={a.name}
+                key={amenity.name}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-                className="p-4 sm:p-5 bg-white/[0.03] border border-white/10 rounded-xl hover:border-emerald-500/30 hover:bg-emerald-500/5 transition-all"
+                transition={{ delay: index * 0.07 }}
+                whileHover={{ scale: 1.05 }}
+                className="bg-slate-900 border border-emerald-900/40 rounded-2xl p-5 text-center hover:border-emerald-500/50 transition-all"
               >
-                <div className="text-3xl mb-2">{a.icon}</div>
-                <p className="text-sm sm:text-base font-medium">{a.name}</p>
+                <span className="text-4xl block mb-3">{amenity.icon}</span>
+                <p className="text-white font-medium text-sm">{amenity.name}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* LOCATION */}
-      <section className="relative py-16 sm:py-24 px-4 sm:px-6 bg-slate-900/50">
-        <div className="max-w-7xl mx-auto">
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-            <p className="text-emerald-400 text-sm tracking-[0.2em] uppercase mb-3">Prime Location</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">Everything Nearby</h2>
-            <p className="text-slate-400 max-w-xl mx-auto">📍 Shamshabad to Kothur, Bangalore Highway NH-44</p>
-          </motion.div>
+      {/* ===== LOCATION SECTION ===== */}
+      <section className="py-20 px-4 max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+            📍 Prime <span className="text-emerald-400">Location</span>
+          </h2>
+          <p className="text-slate-400">
+            Near Kothur, JP Dargah, Bangalore Highway NH-44, Hyderabad
+          </p>
+        </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-            {locationHighlights.map((loc, i) => (
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Nearby Places */}
+          <div className="grid grid-cols-1 gap-3">
+            {nearbyPlaces.map((place, index) => (
               <motion.div
-                key={loc.place}
+                key={place.place}
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="p-5 bg-gradient-to-br from-emerald-500/10 to-transparent border border-emerald-500/20 rounded-xl flex items-center gap-4"
+                transition={{ delay: index * 0.1 }}
+                className="bg-slate-900 border border-emerald-900/40 rounded-xl p-4 flex items-center justify-between hover:border-emerald-500/50 transition-all"
               >
-                <div className="text-4xl">{loc.icon}</div>
-                <div>
-                  <p className="font-semibold text-white">{loc.place}</p>
-                  <p className="text-emerald-400 text-sm">{loc.distance}</p>
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{place.icon}</span>
+                  <span className="text-white font-medium">{place.place}</span>
                 </div>
+                <span className="bg-emerald-500/20 text-emerald-400 text-sm px-3 py-1 rounded-full">
+                  {place.distance}
+                </span>
               </motion.div>
             ))}
           </div>
 
-          <div className="rounded-2xl overflow-hidden border border-white/10 h-64 sm:h-96">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3808.5!2d78.4294!3d17.2403!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDE0JzI1LjEiTiA3OMKwMjUnNDUuOCJF!5e0!3m2!1sen!2sin!4v1700000000000" width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy" />
-          </div>
-        </div>
-      </section>
-
-      {/* LEGAL */}
-      <section className="relative py-16 sm:py-24 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <p className="text-emerald-400 text-sm tracking-[0.2em] uppercase mb-3">100% Safe Investment</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-8">Legal & Documentation</h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {legalPoints.map((point, i) => (
-                <motion.div
-                  key={point}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl text-left"
-                >
-                  <p className="text-base font-medium">{point}</p>
-                </motion.div>
-              ))}
-            </div>
+          {/* Google Maps Embed */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="rounded-2xl overflow-hidden border border-emerald-900/40 min-h-[300px]"
+          >
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30455.955851817747!2d78.08!3d17.08!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDA0JzQ4LjAiTiA3OMKwMDQnNDguMCJF!5e0!3m2!1sen!2sin!4v1234567890"
+              width="100%"
+              height="100%"
+              style={{ minHeight: "300px", border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Green Orchid Farm Land Location"
+            />
           </motion.div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="relative py-16 sm:py-24 px-4 sm:px-6 bg-gradient-to-b from-emerald-900/30 to-slate-950">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">Ready to Own Your Farmhouse?</h2>
-            <p className="text-lg text-slate-300 mb-2">Contact us today for site visit</p>
-            <p className="text-emerald-400 font-semibold mb-8">🎪 Limited Time Offer - Only Few Units Left! 🎪</p>
+      {/* ===== LEGAL DOCUMENTATION SECTION ===== */}
+      <section className="py-16 px-4 bg-emerald-950/20 border-y border-emerald-900/30">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-10"
+          >
+            <h2 className="text-3xl font-bold text-white mb-2">
+              📜 Legal{" "}
+              <span className="text-emerald-400">Documentation</span>
+            </h2>
+            <p className="text-slate-400">
+              100% legal, transparent, and safe investment! 🛡️
+            </p>
+          </motion.div>
 
-            <div className="inline-block p-6 sm:p-8 bg-white/5 border border-white/10 rounded-2xl mb-6">
-              <p className="text-2xl font-bold mb-1">{project.agent.name}</p>
-              <p className="text-emerald-400 text-sm mb-4">{project.agent.designation}, {project.agent.company}</p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <a href={`tel:${project.agent.phone}`} className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full font-bold text-lg transition-all hover:scale-105">
-                  📞 {project.agent.phone}
-                </a>
-                <a href={`https://wa.me/${project.agent.whatsapp}?text=Hi, I want to book site visit`} target="_blank" rel="noopener noreferrer" className="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-full font-bold text-lg transition-all hover:scale-105">
-                  💬 WhatsApp
-                </a>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+            {legalDocs.map((doc, index) => (
+              <motion.div
+                key={doc}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-slate-900 border border-emerald-500/30 rounded-xl p-4 text-center"
+              >
+                <p className="text-white font-medium text-sm">{doc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== CONTACT CTA SECTION ===== */}
+      <section ref={contactRef} className="py-20 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              🤝 Ready to Own Your{" "}
+              <span className="text-emerald-400">Farmhouse?</span>
+            </h2>
+            <p className="text-slate-400 mb-8 text-lg">
+              Contact us today! Site visits available on weekends. 🗓️
+            </p>
+
+            <div className="bg-slate-900 border border-emerald-900/40 rounded-2xl p-8 mb-8">
+              <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+                {/* Contact Details */}
+                <div className="text-left space-y-4">
+                  <div>
+                    <p className="text-slate-400 text-sm">Contact Person</p>
+                    <p className="text-white font-bold text-lg">
+                      R. Ganesh (Marketing Director)
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-slate-400 text-sm">WhatsApp / Call</p>
+                    <a
+                      href="tel:+919505903371"
+                      className="text-emerald-400 font-bold text-xl hover:text-emerald-300 transition-colors"
+                    >
+                      +91 9505903371
+                    </a>
+                  </div>
+                  <div>
+                    <p className="text-slate-400 text-sm">Property Inquiries</p>
+                    <a
+                      href="tel:+919849754071"
+                      className="text-emerald-400 font-bold text-lg hover:text-emerald-300 transition-colors"
+                    >
+                      +91 9849754071
+                    </a>
+                  </div>
+                  <div>
+                    <p className="text-slate-400 text-sm">Location</p>
+                    <p className="text-white text-sm">
+                      Near Kothur, JP Dargah
+                      <br />
+                      Bangalore Highway NH-44
+                      <br />
+                      Hyderabad
+                    </p>
+                  </div>
+                </div>
+
+                {/* QR Code Placeholder */}
+                <div className="bg-slate-800 border border-emerald-900/40 rounded-2xl p-6 text-center">
+                  <div className="w-32 h-32 bg-white rounded-xl flex items-center justify-center mb-3">
+                    <span className="text-4xl">📱</span>
+                  </div>
+                  <p className="text-slate-400 text-xs">
+                    Scan to WhatsApp Us
+                  </p>
+                </div>
               </div>
             </div>
 
-            <div className="mt-8">
-              <button onClick={() => setShowQR(!showQR)} className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-sm font-medium transition-all">
-                {showQR ? "Hide" : "Show"} QR Code to Share
-              </button>
-              <AnimatePresence>
-                {showQR && (
-                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-6 flex justify-center">
-                    <QRCode url="https://own-your-farmhouse.vercel.app" size={180} />
-                  </motion.div>
-                )}
-              </AnimatePresence>
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <motion.a
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                href="https://wa.me/919505903371"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-8 py-4 rounded-full text-lg transition-all flex items-center justify-center gap-2"
+              >
+                <span>💬</span> WhatsApp Now
+              </motion.a>
+              <motion.a
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                href="tel:+919505903371"
+                className="border border-emerald-500 text-emerald-400 hover:bg-emerald-500/10 font-bold px-8 py-4 rounded-full text-lg transition-all flex items-center justify-center gap-2"
+              >
+                <span>📞</span> Call Now
+              </motion.a>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="border-t border-white/10 py-8 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <span className="text-2xl">🌿</span>
-            <span className="font-bold">GREEN ORCHID FARM LAND</span>
+      {/* ===== FOOTER ===== */}
+      <footer className="bg-slate-900 border-t border-emerald-900/30 py-10 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            {/* Brand */}
+            <div className="text-center md:text-left">
+              <div className="flex items-center gap-2 justify-center md:justify-start mb-2">
+                <span className="text-2xl">🌿</span>
+                <p className="text-emerald-400 font-bold">OWN YOUR FARMHOUSE</p>
+              </div>
+              <p className="text-slate-500 text-sm">Bright Properties</p>
+              <p className="text-slate-500 text-xs mt-1">
+                Green Orchid Farm Land — HMDA Approved
+              </p>
+            </div>
+
+            {/* Quick Links */}
+            <div className="flex gap-6 text-sm text-slate-400">
+              <button
+                onClick={() => scrollToSection(propertiesRef)}
+                className="hover:text-emerald-400 transition-colors"
+              >
+                Properties
+              </button>
+              <button
+                onClick={() => scrollToSection(contactRef)}
+                className="hover:text-emerald-400 transition-colors"
+              >
+                Contact
+              </button>
+              <a
+                href="https://wa.me/919505903371"
+                className="hover:text-emerald-400 transition-colors"
+              >
+                WhatsApp
+              </a>
+            </div>
+
+            {/* Copyright */}
+            <p className="text-slate-600 text-xs text-center">
+              © 2024 Bright Properties. All rights reserved.
+            </p>
           </div>
-          <p className="text-slate-500 text-sm">© 2025 Bright Properties. All rights reserved.</p>
-          <p className="text-slate-600 text-xs mt-2">Near Kothur, JP Dargah • R. Ganesh - {project.agent.phone}</p>
         </div>
       </footer>
 
-      <FloatingButtons />
+      {/* ===== FLOATING BUTTONS ===== */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
+        {/* WhatsApp Float */}
+        <motion.a
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          href="https://wa.me/919505903371"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-emerald-500 hover:bg-emerald-400 text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-lg shadow-emerald-900/50"
+          title="WhatsApp Us"
+        >
+          💬
+        </motion.a>
 
-      <AnimatePresence>
-        {lightboxIndex !== null && (
-          <Lightbox images={project.gallery} startIndex={lightboxIndex} onClose={() => setLightboxIndex(null)} />
-        )}
-      </AnimatePresence>
+        {/* Call Float */}
+        <motion.a
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          href="tel:+919505903371"
+          className="bg-blue-600 hover:bg-blue-500 text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-lg shadow-blue-900/50"
+          title="Call Us"
+        >
+          📞
+        </motion.a>
+      </div>
     </div>
   );
 }
