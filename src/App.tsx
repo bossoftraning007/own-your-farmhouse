@@ -1,15 +1,11 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // ==================== PROJECT DATA ====================
 const project = {
   name: "Green Orchid Farm Land",
   developer: "Bright Properties",
-  tagline: "HMDA Approved Farm Plots & Weekend Farmhouses",
   location: "Near Kothur, JP Dargah, Bangalore Highway NH-44",
-  totalArea: "5.5 Acres",
-  totalUnits: "72 Units",
-  approval: "HMDA Approved",
   poster: "/posters/farmhouse.jpeg",
   gallery: [
     "/posters/farmhouse.jpeg",
@@ -34,10 +30,9 @@ const propertyOptions = [
     price: "₹21,00,000",
     plotSize: "121 sq.yards",
     houseSize: "350 sq.ft",
-    type: "1BHK Farmhouse",
     poster: "/posters/farmhouse.jpeg",
     highlight: "🔥 BEST DEAL",
-    color: "amber"
+    highlightColor: "bg-amber-500"
   },
   {
     id: 2,
@@ -45,10 +40,9 @@ const propertyOptions = [
     price: "₹35,00,000",
     plotSize: "242 sq.yards",
     houseSize: "350 sq.ft",
-    type: "Villa Farmhouse",
     poster: "/posters/clubhouse.jpg",
     highlight: "💎 PREMIUM",
-    color: "emerald"
+    highlightColor: "bg-emerald-500"
   }
 ];
 
@@ -106,10 +100,9 @@ function QRCode({ url, size = 150 }: { url: string; size?: number }) {
   );
 }
 
-// ==================== GALLERY LIGHTBOX ====================
+// ==================== LIGHTBOX ====================
 function Lightbox({ images, startIndex, onClose }: { images: string[]; startIndex: number; onClose: () => void }) {
   const [index, setIndex] = useState(startIndex);
-
   const next = () => setIndex((index + 1) % images.length);
   const prev = () => setIndex((index - 1 + images.length) % images.length);
 
@@ -121,37 +114,11 @@ function Lightbox({ images, startIndex, onClose }: { images: string[]; startInde
       className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center"
       onClick={onClose}
     >
-      <button
-        onClick={onClose}
-        className="absolute top-4 right-4 z-10 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white text-xl"
-      >
-        ✕
-      </button>
-
-      <button
-        onClick={(e) => { e.stopPropagation(); prev(); }}
-        className="absolute left-4 z-10 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white text-2xl"
-      >
-        ‹
-      </button>
-
-      <img
-        src={images[index]}
-        alt=""
-        className="max-w-[90vw] max-h-[90vh] object-contain"
-        onClick={(e) => e.stopPropagation()}
-      />
-
-      <button
-        onClick={(e) => { e.stopPropagation(); next(); }}
-        className="absolute right-4 z-10 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white text-2xl"
-      >
-        ›
-      </button>
-
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/50 text-white px-4 py-2 rounded-full text-sm">
-        {index + 1} / {images.length}
-      </div>
+      <button onClick={onClose} className="absolute top-4 right-4 z-10 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white text-xl">✕</button>
+      <button onClick={(e) => { e.stopPropagation(); prev(); }} className="absolute left-4 z-10 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white text-2xl">‹</button>
+      <img src={images[index]} alt="" className="max-w-[90vw] max-h-[90vh] object-contain" onClick={(e) => e.stopPropagation()} />
+      <button onClick={(e) => { e.stopPropagation(); next(); }} className="absolute right-4 z-10 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white text-2xl">›</button>
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/50 text-white px-4 py-2 rounded-full text-sm">{index + 1} / {images.length}</div>
     </motion.div>
   );
 }
@@ -164,13 +131,13 @@ function FloatingButtons() {
         href={`https://wa.me/${project.agent.whatsapp}?text=Hi, I'm interested in Green Orchid Farm Land`}
         target="_blank"
         rel="noopener noreferrer"
-        className="w-14 h-14 bg-emerald-500 hover:bg-emerald-400 rounded-full flex items-center justify-center shadow-2xl shadow-emerald-500/50 hover:scale-110 transition-all animate-pulse"
+        className="w-14 h-14 bg-emerald-500 hover:bg-emerald-400 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all"
       >
         <span className="text-2xl">💬</span>
       </a>
       <a
         href={`tel:${project.agent.phone}`}
-        className="w-14 h-14 bg-amber-500 hover:bg-amber-400 rounded-full flex items-center justify-center shadow-2xl shadow-amber-500/50 hover:scale-110 transition-all"
+        className="w-14 h-14 bg-amber-500 hover:bg-amber-400 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all"
       >
         <span className="text-2xl">📞</span>
       </a>
@@ -183,11 +150,10 @@ export default function App() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [showQR, setShowQR] = useState(false);
   const propertiesRef = useRef<HTMLDivElement>(null);
-  const galleryRef = useRef<HTMLDivElement>(null);
 
-  const scrollTo = (ref: React.RefObject<HTMLDivElement>) => {
-    ref.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  const scrollTo = (ref: React.RefObject<HTMLDivElement | null>) => {
+  ref.current?.scrollIntoView({ behavior: "smooth" });
+};
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
@@ -217,22 +183,13 @@ export default function App() {
       {/* HERO */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
         <div className="absolute inset-0">
-          <img
-            src="/posters/clubhouse.jpg"
-            alt="Green Orchid Farm Land"
-            className="w-full h-full object-cover"
-          />
+          <img src="/posters/clubhouse.jpg" alt="Green Orchid" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/85 to-slate-950/40" />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-20 w-full">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-3xl"
-          >
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-emerald-400 text-xs sm:text-sm mb-6">
               <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
               HMDA APPROVED • 72 UNITS • 5.5 ACRES
@@ -289,19 +246,10 @@ export default function App() {
       {/* PROPERTIES */}
       <section ref={propertiesRef} className="relative py-16 sm:py-24 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
             <p className="text-emerald-400 text-sm tracking-[0.2em] uppercase mb-3">Choose Your Home</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">
-              Available Farmhouses
-            </h2>
-            <p className="text-slate-400 max-w-xl mx-auto">
-              Fully furnished farmhouses with premium amenities. All units come with Bed, TV, Fridge, Sofa & more!
-            </p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">Available Farmhouses</h2>
+            <p className="text-slate-400 max-w-xl mx-auto">Fully furnished farmhouses with premium amenities.</p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
@@ -316,15 +264,11 @@ export default function App() {
                 className="group relative rounded-2xl overflow-hidden border-2 border-white/10 hover:border-emerald-500/50 transition-all shadow-2xl"
               >
                 <div className="relative aspect-[4/5] overflow-hidden bg-slate-900">
-                  <img
-                    src={prop.poster}
-                    alt={prop.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
+                  <img src={prop.poster} alt={prop.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                   <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black via-black/70 to-transparent" />
 
                   <div className="absolute top-4 right-4">
-                    <span className={`bg-${prop.color}-500 text-white text-xs px-3 py-1.5 rounded-full font-bold shadow-lg animate-pulse`}>
+                    <span className={`${prop.highlightColor} text-white text-xs px-3 py-1.5 rounded-full font-bold shadow-lg`}>
                       {prop.highlight}
                     </span>
                   </div>
@@ -341,18 +285,10 @@ export default function App() {
                       </span>
                     </div>
                     <div className="flex gap-2">
-                      <a
-                        href={`tel:${project.agent.phone}`}
-                        className="flex-1 bg-emerald-500 hover:bg-emerald-400 text-white text-center py-2.5 rounded-full font-semibold text-sm transition-all"
-                      >
+                      <a href={`tel:${project.agent.phone}`} className="flex-1 bg-emerald-500 hover:bg-emerald-400 text-white text-center py-2.5 rounded-full font-semibold text-sm transition-all">
                         📞 Call
                       </a>
-                      <a
-                        href={`https://wa.me/${project.agent.whatsapp}?text=Hi, interested in ${prop.title} at Green Orchid`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-center py-2.5 rounded-full font-semibold text-sm transition-all"
-                      >
+                      <a href={`https://wa.me/${project.agent.whatsapp}?text=Hi, interested in ${prop.title}`} target="_blank" rel="noopener noreferrer" className="flex-1 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-center py-2.5 rounded-full font-semibold text-sm transition-all">
                         💬 WhatsApp
                       </a>
                     </div>
@@ -362,19 +298,11 @@ export default function App() {
             ))}
           </div>
 
-          {/* Furniture Included */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mt-10 p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl"
-          >
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-10 p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl">
             <h3 className="text-lg sm:text-xl font-bold mb-4 text-emerald-400">✨ Fully Furnished — Included with Every Farmhouse</h3>
             <div className="flex flex-wrap gap-2">
               {furniture.map((item) => (
-                <span key={item} className="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm">
-                  {item}
-                </span>
+                <span key={item} className="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm">{item}</span>
               ))}
             </div>
           </motion.div>
@@ -382,21 +310,12 @@ export default function App() {
       </section>
 
       {/* GALLERY */}
-      <section ref={galleryRef} className="relative py-16 sm:py-24 px-4 sm:px-6 bg-slate-900/50">
+      <section className="relative py-16 sm:py-24 px-4 sm:px-6 bg-slate-900/50">
         <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
             <p className="text-emerald-400 text-sm tracking-[0.2em] uppercase mb-3">Project Gallery</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">
-              See Green Orchid In Real
-            </h2>
-            <p className="text-slate-400 max-w-xl mx-auto">
-              Tap any photo to view in full screen
-            </p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">See Green Orchid In Real</h2>
+            <p className="text-slate-400 max-w-xl mx-auto">Tap any photo to view in full screen</p>
           </motion.div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
@@ -413,16 +332,7 @@ export default function App() {
                   i === 0 ? "col-span-2 row-span-2 aspect-square" : "aspect-square"
                 }`}
               >
-                <img
-                  src={img}
-                  alt=""
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-black/0 hover:bg-black/30 transition-all flex items-center justify-center opacity-0 hover:opacity-100">
-                  <span className="text-white bg-black/60 px-4 py-2 rounded-full text-sm font-semibold">
-                    🔍 View
-                  </span>
-                </div>
+                <img src={img} alt="" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
               </motion.div>
             ))}
           </div>
@@ -432,16 +342,9 @@ export default function App() {
       {/* AMENITIES */}
       <section className="relative py-16 sm:py-24 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
             <p className="text-emerald-400 text-sm tracking-[0.2em] uppercase mb-3">World Class Amenities</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">
-              Everything You Need
-            </h2>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">Everything You Need</h2>
           </motion.div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
@@ -465,19 +368,10 @@ export default function App() {
       {/* LOCATION */}
       <section className="relative py-16 sm:py-24 px-4 sm:px-6 bg-slate-900/50">
         <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
             <p className="text-emerald-400 text-sm tracking-[0.2em] uppercase mb-3">Prime Location</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">
-              Everything Nearby
-            </h2>
-            <p className="text-slate-400 max-w-xl mx-auto">
-              📍 Shamshabad to Kothur, Bangalore Highway NH-44, Inmulanarva Village
-            </p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">Everything Nearby</h2>
+            <p className="text-slate-400 max-w-xl mx-auto">📍 Shamshabad to Kothur, Bangalore Highway NH-44</p>
           </motion.div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
@@ -499,16 +393,8 @@ export default function App() {
             ))}
           </div>
 
-          {/* Map */}
           <div className="rounded-2xl overflow-hidden border border-white/10 h-64 sm:h-96">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3808.5!2d78.4294!3d17.2403!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDE0JzI1LjEiTiA3OMKwMjUnNDUuOCJF!5e0!3m2!1sen!2sin!4v1700000000000"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-            />
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3808.5!2d78.4294!3d17.2403!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDE0JzI1LjEiTiA3OMKwMjUnNDUuOCJF!5e0!3m2!1sen!2sin!4v1700000000000" width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy" />
           </div>
         </div>
       </section>
@@ -516,15 +402,9 @@ export default function App() {
       {/* LEGAL */}
       <section className="relative py-16 sm:py-24 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <p className="text-emerald-400 text-sm tracking-[0.2em] uppercase mb-3">100% Safe Investment</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-8">
-              Legal & Documentation
-            </h2>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-8">Legal & Documentation</h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {legalPoints.map((point, i) => (
@@ -544,17 +424,11 @@ export default function App() {
         </div>
       </section>
 
-      {/* CONTACT CTA */}
+      {/* CTA */}
       <section className="relative py-16 sm:py-24 px-4 sm:px-6 bg-gradient-to-b from-emerald-900/30 to-slate-950">
         <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">
-              Ready to Own Your Farmhouse?
-            </h2>
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">Ready to Own Your Farmhouse?</h2>
             <p className="text-lg text-slate-300 mb-2">Contact us today for site visit</p>
             <p className="text-emerald-400 font-semibold mb-8">🎪 Limited Time Offer - Only Few Units Left! 🎪</p>
 
@@ -562,38 +436,22 @@ export default function App() {
               <p className="text-2xl font-bold mb-1">{project.agent.name}</p>
               <p className="text-emerald-400 text-sm mb-4">{project.agent.designation}, {project.agent.company}</p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <a
-                  href={`tel:${project.agent.phone}`}
-                  className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full font-bold text-lg transition-all hover:scale-105 shadow-lg shadow-emerald-500/30"
-                >
+                <a href={`tel:${project.agent.phone}`} className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full font-bold text-lg transition-all hover:scale-105">
                   📞 {project.agent.phone}
                 </a>
-                <a
-                  href={`https://wa.me/${project.agent.whatsapp}?text=Hi, I want to book site visit for Green Orchid Farm Land`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-full font-bold text-lg transition-all hover:scale-105"
-                >
+                <a href={`https://wa.me/${project.agent.whatsapp}?text=Hi, I want to book site visit`} target="_blank" rel="noopener noreferrer" className="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-full font-bold text-lg transition-all hover:scale-105">
                   💬 WhatsApp
                 </a>
               </div>
             </div>
 
             <div className="mt-8">
-              <button
-                onClick={() => setShowQR(!showQR)}
-                className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-sm font-medium transition-all"
-              >
+              <button onClick={() => setShowQR(!showQR)} className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-sm font-medium transition-all">
                 {showQR ? "Hide" : "Show"} QR Code to Share
               </button>
               <AnimatePresence>
                 {showQR && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="mt-6 flex justify-center"
-                  >
+                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-6 flex justify-center">
                     <QRCode url="https://own-your-farmhouse.vercel.app" size={180} />
                   </motion.div>
                 )}
@@ -610,26 +468,16 @@ export default function App() {
             <span className="text-2xl">🌿</span>
             <span className="font-bold">GREEN ORCHID FARM LAND</span>
           </div>
-          <p className="text-slate-500 text-sm">
-            © 2025 Bright Properties. All rights reserved.
-          </p>
-          <p className="text-slate-600 text-xs mt-2">
-            Near Kothur, JP Dargah, Hyderabad • R. Ganesh - {project.agent.phone}
-          </p>
+          <p className="text-slate-500 text-sm">© 2025 Bright Properties. All rights reserved.</p>
+          <p className="text-slate-600 text-xs mt-2">Near Kothur, JP Dargah • R. Ganesh - {project.agent.phone}</p>
         </div>
       </footer>
 
-      {/* FLOATING BUTTONS */}
       <FloatingButtons />
 
-      {/* LIGHTBOX */}
       <AnimatePresence>
         {lightboxIndex !== null && (
-          <Lightbox
-            images={project.gallery}
-            startIndex={lightboxIndex}
-            onClose={() => setLightboxIndex(null)}
-          />
+          <Lightbox images={project.gallery} startIndex={lightboxIndex} onClose={() => setLightboxIndex(null)} />
         )}
       </AnimatePresence>
     </div>
