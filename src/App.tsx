@@ -47,20 +47,39 @@ const properties: Property[] = [
     emoji: "🏠",
     features: [
       "HMDA Approved",
-      "Fully Furnished",
       "2 Year Free Maintenance",
       "Gated Community",
+      "Swimming Pool & Club House",
     ],
   },
-  
 ];
 
 const galleryImages: GalleryImage[] = [
-  { src: "/posters/farmhouse.jpeg", alt: "Farmhouse View", label: "🏡 Farmhouse" },
-  { src: "/posters/bus.jpg.jpeg", alt: "Bus Facility", label: "🚌 Transport" },
-  { src: "/posters/clubhouse.jpg.jpeg", alt: "Club House", label: "🏊 Club House" },
-  { src: "/posters/layout.jpg.png", alt: "Layout Plan", label: "🗺️ Layout" },
-  { src: "/posters/plot.jpg.jpeg", alt: "Plot View", label: "🌿 Plot" },
+  {
+    src: "/posters/farmhouse.jpeg",
+    alt: "Farmhouse View",
+    label: "🏡 Farmhouse",
+  },
+  {
+    src: "/posters/bus.jpg.jpeg",
+    alt: "Bus Facility",
+    label: "🚌 Transport",
+  },
+  {
+    src: "/posters/clubhouse.jpg.jpeg",
+    alt: "Club House",
+    label: "🏊 Club House",
+  },
+  {
+    src: "/posters/layout.jpg.png",
+    alt: "Layout Plan",
+    label: "🗺️ Layout",
+  },
+  {
+    src: "/posters/plot.jpg.jpeg",
+    alt: "Plot View",
+    label: "🌿 Plot",
+  },
 ];
 
 const amenities: Amenity[] = [
@@ -87,8 +106,6 @@ const nearbyPlaces: NearbyPlace[] = [
   { icon: "🏢", place: "Gachibowli IT SEZ", distance: "30 mins drive" },
 ];
 
-
-
 const legalDocs: string[] = [
   "✅ HMDA Approved",
   "📜 Sale Deed with MRO",
@@ -105,7 +122,7 @@ export default function App() {
 
   const scrollToSection = (ref: React.RefObject<HTMLDivElement | null>) => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
-};
+  };
 
   const openLightbox = (index: number) => {
     setActiveImage(index);
@@ -126,9 +143,11 @@ export default function App() {
 
   return (
     <div className="bg-slate-950 text-white min-h-screen font-sans">
+
       {/* ===== NAVBAR ===== */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-emerald-900/30">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+
           {/* Logo */}
           <div className="flex items-center gap-2">
             <span className="text-2xl">🌿</span>
@@ -140,7 +159,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* Nav Links — hidden on mobile */}
+          {/* Nav Links */}
           <div className="hidden md:flex items-center gap-6 text-sm text-slate-300">
             <button
               onClick={() => scrollToSection(propertiesRef)}
@@ -166,16 +185,19 @@ export default function App() {
             <span>💬</span>
             <span className="hidden sm:inline">WhatsApp Us</span>
           </a>
+
         </div>
       </nav>
 
       {/* ===== HERO SECTION ===== */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+
         {/* Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: "url('/posters/clubhouse.jpg.jpeg')" }}
         />
+
         {/* Dark Overlay */}
         <div className="absolute inset-0 bg-slate-950/70" />
 
@@ -196,9 +218,8 @@ export default function App() {
             </h1>
 
             <p className="text-slate-300 text-lg md:text-xl mb-8 max-w-2xl mx-auto">
-              Your dream farmhouse awaits 🏡 — Fully furnished, gated
-              community, with swimming pool & club house on Bangalore Highway
-              NH-44
+              Your dream farmhouse awaits 🏡 — Gated community with swimming
+              pool & club house on Bangalore Highway NH-44
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -240,6 +261,7 @@ export default function App() {
                 </div>
               ))}
             </div>
+
           </motion.div>
         </div>
 
@@ -251,6 +273,7 @@ export default function App() {
         >
           ↓
         </motion.div>
+
       </section>
 
       {/* ===== PROPERTIES SECTION ===== */}
@@ -263,15 +286,15 @@ export default function App() {
           className="text-center mb-12"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
-            🏠 Our <span className="text-emerald-400">Properties</span>
+            🏠 Our <span className="text-emerald-400">Property</span>
           </h2>
           <p className="text-slate-400 max-w-xl mx-auto">
-            Choose your perfect farmhouse — both options are fully furnished &
-            HMDA approved!
+            HMDA Approved farmhouse — your perfect investment! 🌿
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        {/* Single card centered */}
+        <div className="flex justify-center">
           {properties.map((property, index) => (
             <motion.div
               key={property.id}
@@ -280,7 +303,7 @@ export default function App() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.2 }}
               whileHover={{ y: -8 }}
-              className="bg-slate-900 border border-emerald-900/40 rounded-2xl overflow-hidden hover:border-emerald-500/50 transition-all"
+              className="bg-slate-900 border border-emerald-900/40 rounded-2xl overflow-hidden hover:border-emerald-500/50 transition-all w-full max-w-md"
             >
               {/* Card Header */}
               <div className="bg-gradient-to-br from-emerald-900/40 to-slate-900 p-6 text-center">
@@ -336,7 +359,208 @@ export default function App() {
         </div>
       </section>
 
-      
+      {/* ===== GALLERY SECTION ===== */}
+      <section className="py-20 px-4 max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+            📸 <span className="text-emerald-400">Gallery</span>
+          </h2>
+          <p className="text-slate-400">
+            Click any image to view it bigger! 🔍
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {galleryImages.map((image, index) => (
+            <motion.div
+              key={image.src}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ scale: 1.03 }}
+              onClick={() => openLightbox(index)}
+              className="relative cursor-pointer rounded-2xl overflow-hidden border border-emerald-900/40 hover:border-emerald-500/50 transition-all"
+            >
+              <img
+                src={image.src}
+                alt={image.alt}
+                className="w-full h-48 md:h-56 object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent" />
+              <div className="absolute bottom-3 left-3">
+                <span className="text-white font-medium text-sm">
+                  {image.label}
+                </span>
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity bg-slate-950/40">
+                <span className="text-white text-3xl">🔍</span>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* ===== LIGHTBOX ===== */}
+      <AnimatePresence>
+        {lightboxOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-slate-950/95 flex items-center justify-center p-4"
+            onClick={closeLightbox}
+          >
+            <motion.div
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+              className="relative max-w-4xl w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={galleryImages[activeImage].src}
+                alt={galleryImages[activeImage].alt}
+                className="w-full max-h-[80vh] object-contain rounded-2xl"
+              />
+
+              {/* Close Button */}
+              <button
+                onClick={closeLightbox}
+                className="absolute top-4 right-4 bg-slate-800 hover:bg-slate-700 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl"
+              >
+                ✕
+              </button>
+
+              {/* Prev Button */}
+              <button
+                onClick={prevImage}
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-slate-800 hover:bg-emerald-700 text-white w-10 h-10 rounded-full flex items-center justify-center"
+              >
+                ←
+              </button>
+
+              {/* Next Button */}
+              <button
+                onClick={nextImage}
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-slate-800 hover:bg-emerald-700 text-white w-10 h-10 rounded-full flex items-center justify-center"
+              >
+                →
+              </button>
+
+              {/* Image Label */}
+              <p className="text-center text-slate-300 mt-4 text-sm">
+                {galleryImages[activeImage].label} — {activeImage + 1} /{" "}
+                {galleryImages.length}
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ===== AMENITIES SECTION ===== */}
+      <section className="py-20 px-4 bg-slate-900/50">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+              ✨ World-Class{" "}
+              <span className="text-emerald-400">Amenities</span>
+            </h2>
+            <p className="text-slate-400">
+              Everything you need for the perfect farmhouse life!
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            {amenities.map((amenity, index) => (
+              <motion.div
+                key={amenity.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.07 }}
+                whileHover={{ scale: 1.05 }}
+                className="bg-slate-900 border border-emerald-900/40 rounded-2xl p-5 text-center hover:border-emerald-500/50 transition-all"
+              >
+                <span className="text-4xl block mb-3">{amenity.icon}</span>
+                <p className="text-white font-medium text-sm">{amenity.name}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== LOCATION SECTION ===== */}
+      <section className="py-20 px-4 max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+            📍 Prime <span className="text-emerald-400">Location</span>
+          </h2>
+          <p className="text-slate-400">
+            Near Kothur, JP Dargah, Bangalore Highway NH-44, Hyderabad
+          </p>
+        </motion.div>
+
+        <div className="grid md:grid-cols-2 gap-8">
+
+          {/* Nearby Places */}
+          <div className="grid grid-cols-1 gap-3">
+            {nearbyPlaces.map((place, index) => (
+              <motion.div
+                key={place.place}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-slate-900 border border-emerald-900/40 rounded-xl p-4 flex items-center justify-between hover:border-emerald-500/50 transition-all"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{place.icon}</span>
+                  <span className="text-white font-medium">{place.place}</span>
+                </div>
+                <span className="bg-emerald-500/20 text-emerald-400 text-sm px-3 py-1 rounded-full">
+                  {place.distance}
+                </span>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Google Maps */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="rounded-2xl overflow-hidden border border-emerald-900/40 min-h-[300px]"
+          >
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30455.955851817747!2d78.08!3d17.08!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDA0JzQ4LjAiTiA3OMKwMDQnNDguMCJF!5e0!3m2!1sen!2sin!4v1234567890"
+              width="100%"
+              height="100%"
+              style={{ minHeight: "300px", border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Green Orchid Farm Land Location"
+            />
+          </motion.div>
+
+        </div>
+      </section>
 
       {/* ===== LEGAL DOCUMENTATION SECTION ===== */}
       <section className="py-16 px-4 bg-emerald-950/20 border-y border-emerald-900/30">
@@ -348,8 +572,7 @@ export default function App() {
             className="text-center mb-10"
           >
             <h2 className="text-3xl font-bold text-white mb-2">
-              📜 Legal{" "}
-              <span className="text-emerald-400">Documentation</span>
+              📜 Legal <span className="text-emerald-400">Documentation</span>
             </h2>
             <p className="text-slate-400">
               100% legal, transparent, and safe investment! 🛡️
@@ -373,7 +596,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* ===== CONTACT CTA SECTION ===== */}
+      {/* ===== CONTACT SECTION ===== */}
       <section ref={contactRef} className="py-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
@@ -389,8 +612,10 @@ export default function App() {
               Contact us today! Site visits available on weekends. 🗓️
             </p>
 
+            {/* Contact Card */}
             <div className="bg-slate-900 border border-emerald-900/40 rounded-2xl p-8 mb-8">
               <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+
                 {/* Contact Details */}
                 <div className="text-left space-y-4">
                   <div>
@@ -429,19 +654,21 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* QR Code Placeholder */}
+                {/* ✅ REAL QR CODE */}
                 <div className="bg-slate-800 border border-emerald-900/40 rounded-2xl p-6 text-center">
-  <div className="w-36 h-36 bg-white rounded-xl flex items-center justify-center mb-3 p-2">
-    <img
-      src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=https://wa.me/919505903371"
-      alt="WhatsApp QR Code"
-      className="w-full h-full rounded-lg"
-    />
-  </div>
-  <p className="text-slate-400 text-xs">📱 Scan to WhatsApp Us</p>
-  <p className="text-emerald-400 text-xs font-bold mt-1">+91 9505903371</p>
-</div>
+                  <div className="w-36 h-36 bg-white rounded-xl flex items-center justify-center mb-3 p-2">
+                    <img
+                      src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=https://wa.me/919505903371"
+                      alt="WhatsApp QR Code"
+                      className="w-full h-full rounded-lg"
+                    />
+                  </div>
+                  <p className="text-slate-400 text-xs">📱 Scan to WhatsApp Us</p>
+                  <p className="text-emerald-400 text-xs font-bold mt-1">
+                    +91 9505903371
+                  </p>
                 </div>
+
               </div>
             </div>
 
@@ -466,6 +693,7 @@ export default function App() {
                 <span>📞</span> Call Now
               </motion.a>
             </div>
+
           </motion.div>
         </div>
       </section>
@@ -474,6 +702,7 @@ export default function App() {
       <footer className="bg-slate-900 border-t border-emerald-900/30 py-10 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+
             {/* Brand */}
             <div className="text-center md:text-left">
               <div className="flex items-center gap-2 justify-center md:justify-start mb-2">
@@ -512,12 +741,14 @@ export default function App() {
             <p className="text-slate-600 text-xs text-center">
               © 2024 Bright Properties. All rights reserved.
             </p>
+
           </div>
         </div>
       </footer>
 
       {/* ===== FLOATING BUTTONS ===== */}
       <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
+
         {/* WhatsApp Float */}
         <motion.a
           whileHover={{ scale: 1.1 }}
@@ -541,7 +772,9 @@ export default function App() {
         >
           📞
         </motion.a>
+
       </div>
+
     </div>
   );
 }
