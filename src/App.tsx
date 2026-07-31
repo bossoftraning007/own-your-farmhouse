@@ -22,8 +22,8 @@ const project = {
     name: "R. Ganesh",
     designation: "Marketing Director",
     company: "Bright Properties",
-    phone: "+919849754071",
-    whatsapp: "919849754071"
+    phone: "+919505903371",
+    whatsapp: "919505903371"
   }
 };
 
