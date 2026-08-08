@@ -697,7 +697,178 @@ export default function App() {
           </motion.div>
         </div>
       </section>
+      {/* ========== SHAREABLE POSTER SECTION ========== */}
+      <section className="relative py-16 sm:py-24 px-4 sm:px-6 bg-gradient-to-b from-slate-950 via-emerald-950/20 to-slate-950">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-8"
+          >
+            <p className="text-emerald-400 text-sm tracking-[0.2em] uppercase mb-3">📱 Share With Anyone</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">
+              Share This Poster
+            </h2>
+            <p className="text-slate-400 max-w-xl mx-auto mb-2">
+              Screenshot & share on WhatsApp, Instagram, Facebook
+            </p>
+            <p className="text-emerald-400 text-sm">
+              📸 Right-click below → Save Image
+            </p>
+          </motion.div>
 
+          {/* THE BEAUTIFUL POSTER */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="relative mx-auto max-w-md bg-gradient-to-br from-emerald-900 via-slate-900 to-emerald-950 rounded-3xl overflow-hidden shadow-2xl shadow-emerald-500/30 border-2 border-emerald-500/30"
+          >
+            {/* Decorative top pattern */}
+            <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-emerald-400 via-yellow-400 to-emerald-400" />
+
+            {/* Header with Logo */}
+            <div className="pt-8 pb-4 px-6 text-center">
+              <div className="inline-flex items-center gap-2 mb-3">
+                <span className="text-4xl">🌿</span>
+                <div className="text-left">
+                  <p className="text-emerald-400 text-xs tracking-widest font-bold">BRIGHT PROPERTIES</p>
+                  <p className="text-white text-xl font-black tracking-tight">GREEN ORCHID</p>
+                </div>
+              </div>
+              <div className="inline-block px-4 py-1 bg-yellow-500 text-black text-xs font-bold rounded-full uppercase tracking-wider">
+                🎪 HMDA Approved
+              </div>
+            </div>
+
+            {/* Main Image */}
+            <div className="relative mx-4 rounded-2xl overflow-hidden border-2 border-emerald-500/30">
+              <img 
+                src="/posters/clubhouse.jpg.jpeg" 
+                alt="Green Orchid Farm Land"
+                className="w-full h-56 object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+              <div className="absolute bottom-3 left-3 right-3">
+                <p className="text-white text-2xl font-black leading-tight drop-shadow-lg">
+                  YOUR DREAM
+                </p>
+                <p className="text-emerald-400 text-3xl font-black leading-tight drop-shadow-lg">
+                  FARMHOUSE
+                </p>
+              </div>
+            </div>
+
+            {/* Price Section */}
+            <div className="mx-4 mt-4 p-4 bg-gradient-to-r from-red-600 to-red-700 rounded-xl text-center">
+              <p className="text-yellow-300 text-xs font-bold tracking-wider uppercase mb-1">💫 Special Price</p>
+              <p className="text-white text-3xl font-black">₹21,00,000</p>
+              <p className="text-white/80 text-xs">1BHK Farmhouse • 121 sq.yards</p>
+            </div>
+
+            {/* Key Features Grid */}
+            <div className="grid grid-cols-2 gap-2 mx-4 mt-4">
+              <div className="bg-white/5 border border-emerald-500/20 rounded-lg p-2.5 text-center">
+                <div className="text-2xl mb-1">🏊</div>
+                <p className="text-white text-xs font-semibold">Swimming Pool</p>
+              </div>
+              <div className="bg-white/5 border border-emerald-500/20 rounded-lg p-2.5 text-center">
+                <div className="text-2xl mb-1">🏛️</div>
+                <p className="text-white text-xs font-semibold">Club House</p>
+              </div>
+              <div className="bg-white/5 border border-emerald-500/20 rounded-lg p-2.5 text-center">
+                <div className="text-2xl mb-1">🔒</div>
+                <p className="text-white text-xs font-semibold">24/7 Security</p>
+              </div>
+              <div className="bg-white/5 border border-emerald-500/20 rounded-lg p-2.5 text-center">
+                <div className="text-2xl mb-1">🌳</div>
+                <p className="text-white text-xs font-semibold">Fruit Plants</p>
+              </div>
+            </div>
+
+            {/* Location Highlights */}
+            <div className="mx-4 mt-4 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl">
+              <p className="text-emerald-400 text-xs font-bold uppercase tracking-wider mb-2 text-center">📍 Prime Location</p>
+              <div className="space-y-1 text-white text-xs">
+                <p>✈️ 15 mins from <span className="text-emerald-400 font-bold">Shamshabad Airport</span></p>
+                <p>💻 2 km from <span className="text-emerald-400 font-bold">Microsoft Data Center</span></p>
+                <p>🏢 30 mins from <span className="text-emerald-400 font-bold">Gachibowli IT</span></p>
+              </div>
+            </div>
+
+            {/* QR Code Section */}
+            <div className="mx-4 mt-4 p-4 bg-white rounded-xl">
+              <div className="flex items-center gap-3">
+                <img
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://own-your-farmhouse.vercel.app&bgcolor=ffffff&color=000000&format=svg"
+                  alt="Scan QR Code"
+                  width={100}
+                  height={100}
+                  className="rounded-lg border-2 border-emerald-500"
+                />
+                <div className="flex-1">
+                  <p className="text-emerald-700 text-[10px] font-bold uppercase tracking-wider mb-1">📱 Scan to Visit</p>
+                  <p className="text-slate-800 text-sm font-black leading-tight">
+                    own-your-farmhouse.vercel.app
+                  </p>
+                  <p className="text-slate-600 text-xs mt-1">See details, photos & book visit</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Section */}
+            <div className="mx-4 mt-4 mb-4 p-4 bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-xl">
+              <p className="text-yellow-300 text-xs font-bold uppercase tracking-wider text-center mb-2">📞 Contact Now</p>
+              <p className="text-white text-center text-lg font-black mb-2">R. GANESH</p>
+              <div className="flex items-center justify-center gap-2 text-white">
+                <span className="text-2xl">📱</span>
+                <span className="text-xl font-bold">+91 9505903371</span>
+              </div>
+            </div>
+
+            {/* Bottom Tagline */}
+            <div className="bg-yellow-500 py-2.5 text-center">
+              <p className="text-black font-black text-sm tracking-wide">
+                🌟 INVEST • RELAX • ENJOY • GROW 🌟
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Action Buttons Below Poster */}
+          <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
+            <a
+              href={`https://wa.me/?text=Check%20out%20this%20amazing%20farmhouse!%20🏡%0A%0A🌿%20Green%20Orchid%20Farm%20Land%0A📍%20Near%20Kothur,%20Hyderabad%0A💰%20Starting%20₹21%20Lakhs%0A%0AView%20details:%20https://own-your-farmhouse.vercel.app`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-emerald-500/30"
+            >
+              💬 Share on WhatsApp
+            </a>
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText("https://own-your-farmhouse.vercel.app");
+                alert("Link copied! Share it anywhere 🎉");
+              }}
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-full font-bold transition-all hover:scale-105 border border-white/20"
+            >
+              📋 Copy Link
+            </button>
+          </div>
+
+          {/* Instructions */}
+          <div className="mt-8 p-6 bg-white/5 border border-white/10 rounded-2xl">
+            <h3 className="text-emerald-400 font-bold text-lg mb-3">💡 How to Share This Poster:</h3>
+            <div className="space-y-2 text-slate-300 text-sm">
+              <p>📸 <strong>Screenshot</strong> the poster above</p>
+              <p>💬 <strong>Share</strong> on WhatsApp Status, Instagram Story, Facebook</p>
+              <p>🖨️ <strong>Print</strong> and stick at shops, tea stalls, notice boards</p>
+              <p>📱 <strong>QR code</strong> - people scan it → opens your website instantly!</p>
+              <p>🎁 <strong>Tip:</strong> Share in 5 WhatsApp groups daily = 500+ views/day FREE!</p>
+            </div>
+          </div>
+        </div>
+      </section>
       {/* ===== FOOTER ===== */}
       <footer className="bg-slate-900 border-t border-emerald-900/30 py-10 px-4">
         <div className="max-w-7xl mx-auto">
