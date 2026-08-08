@@ -697,6 +697,94 @@ export default function App() {
           </motion.div>
         </div>
       </section>
+            {/* ========== MARKETING POSTERS SECTION ========== */}
+      <section className="relative py-16 sm:py-24 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <p className="text-emerald-400 text-sm tracking-[0.2em] uppercase mb-3">📸 Our Campaigns</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">
+              Marketing Posters
+            </h2>
+            <p className="text-slate-400 max-w-xl mx-auto">
+              Screenshot & share these beautiful posters with anyone!
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
+            {/* Poster 1 - Farmhouse */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -8, scale: 1.02 }}
+              className="group relative rounded-2xl overflow-hidden border-2 border-white/10 hover:border-emerald-500/50 transition-all shadow-2xl cursor-pointer"
+            >
+              <img 
+                src="/posters/farmhouse.jpeg" 
+                alt="Farmhouse for Sale"
+                className="w-full h-auto"
+              />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                <a
+                  href="/posters/farmhouse.jpeg"
+                  download="green-orchid-farmhouse.jpg"
+                  className="bg-emerald-500 hover:bg-emerald-400 text-white px-6 py-3 rounded-full font-bold text-sm shadow-2xl"
+                >
+                  📥 Download Poster
+                </a>
+              </div>
+            </motion.div>
+
+            {/* Poster 2 - Weekend Houses */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.15 }}
+              whileHover={{ y: -8, scale: 1.02 }}
+              className="group relative rounded-2xl overflow-hidden border-2 border-white/10 hover:border-emerald-500/50 transition-all shadow-2xl cursor-pointer"
+            >
+              <img 
+                src="/posters/weekend-houses.jpg" 
+                alt="Weekend Houses for Sale"
+                className="w-full h-auto"
+              />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                <a
+                  href="/posters/weekend-houses.jpg"
+                  download="green-orchid-weekend-houses.jpg"
+                  className="bg-emerald-500 hover:bg-emerald-400 text-white px-6 py-3 rounded-full font-bold text-sm shadow-2xl"
+                >
+                  📥 Download Poster
+                </a>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Share All Buttons */}
+          <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
+            <a
+              href={`https://wa.me/?text=🏡%20Weekend%20Houses%20at%20Green%20Orchid!%0A%0A💰%20Only%20₹21%20Lakhs%20(was%20₹24L)%0A📍%20Near%20Kothur,%20JP%20Dargah%0A🎁%20FREE%20Furniture%20on%20booking!%0A%0AView%20more:%20https://own-your-farmhouse.vercel.app`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full font-bold transition-all hover:scale-105"
+            >
+              💬 Share on WhatsApp
+            </a>
+            <a
+              href={`tel:+919505903371`}
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-400 text-black rounded-full font-bold transition-all hover:scale-105"
+            >
+              📞 Book Site Visit
+            </a>
+          </div>
+        </div>
+      </section>
       {/* ========== SHAREABLE POSTER SECTION ========== */}
       <section className="relative py-16 sm:py-24 px-4 sm:px-6 bg-gradient-to-b from-slate-950 via-emerald-950/20 to-slate-950">
         <div className="max-w-4xl mx-auto">
