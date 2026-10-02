@@ -1,5 +1,4 @@
 import { useCallback, useEffect } from "react";
-import { ErrorBoundary } from "./components/ErrorBoundary";
 import { Seo } from "./components/Seo";
 import { Navbar } from "./components/Navbar";
 import { Hero } from "./components/Hero";
@@ -29,7 +28,7 @@ export default function App() {
   }, []);
 
   return (
-    <ErrorBoundary>
+    <>
       <Seo />
       <Navbar onNavigate={scrollTo} />
 
@@ -49,6 +48,6 @@ export default function App() {
       <Footer onNavigate={scrollTo} />
       <FloatingActions />
       <StickyMobileBar />
-    </ErrorBoundary>
+    </>
   );
 }
