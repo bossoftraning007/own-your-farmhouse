@@ -8,8 +8,44 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+  /* The navbar is fixed; anchor targets need this offset or they hide under it. */
+  scroll-padding-top: 4.5rem;
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   background: #0f172a;
-  color: white;
-  font-family: system-ui, -apple-system, sans-serif;
+  color: #fff;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* Avoids horizontal scroll on mobile when an element is wider than viewport */
+  overflow-x: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Visible keyboard focus for accessibility - framer-motion's whileTap removes
+   the default outline on some elements. */
+:focus-visible {
+  outline: 2px solid #34d399;
+  outline-offset: 2px;
+}
+
+/* Keep images from ever exceeding their container. */
+img {
+  max-width: 100%;
+  height: auto;
 }
