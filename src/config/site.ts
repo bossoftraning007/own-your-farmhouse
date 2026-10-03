@@ -49,7 +49,7 @@ export const business = {
   /** Short marketing name shown in the navbar / footer / posters. */
   tagline: "Own Your Farmhouse",
   project: "Green Orchid Farm Land",
-  type: "HMDA Approved 1BHK Farmhouse",
+  type: "1BHK Farmhouse",
   area: "Kothur, Hyderabad",
   currency: "₹",
 } as const;
@@ -95,10 +95,10 @@ export const location = {
  * mid-word on every search result.
  */
 export const seo = {
-  title: "1BHK Farmhouse for Sale near Kothur, Hyderabad | HMDA Approved",
+  title: "1BHK Farmhouse for Sale near Kothur, Hyderabad | Gated Community",
   // Interpolated from `price` so a price change cannot miss this string, which
   // is the single most-read text on the whole site.
-  description: `HMDA approved 1BHK farmhouse near Kothur on NH-44, Hyderabad. 121 sq.yards plot, pool, club house, gated. From ${price.short}. Call 95059 03371.`,
+  description: `1BHK farmhouse near Kothur on NH-44, Hyderabad. 121 sq.yards plot, pool, club house, gated. From ${price.short}. Call 95059 03371.`,
   ogImage: "/og/og-image.jpg",
   ogImageAlt: `${business.project} - ${business.type} near JP Dargah, Kothur, Hyderabad. Starting ${price.display}.`,
 } as const;

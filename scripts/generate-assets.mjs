@@ -194,12 +194,12 @@ async function generateOgImage() {
     <text x="64" y="222" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="bold" fill="${AVATAR.white}">Green Orchid</text>
     <text x="64" y="304" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="bold" fill="${AVATAR.green}">Farm Land</text>
 
-    <text x="64" y="366" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#cbd5e1">HMDA Approved 1BHK Farmhouse &#183; 121 sq.yards</text>
+    <text x="64" y="366" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#cbd5e1">Gated 1BHK Farmhouse &#183; 121 sq.yards</text>
 
     <rect x="64" y="404" width="360" height="76" rx="38" fill="#dc2626"/>
     <text x="244" y="455" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="bold" fill="${AVATAR.white}">${PRICE_DISPLAY}</text>
 
-    <text x="452" y="434" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="bold" fill="#fbbf24">HMDA APPROVED</text>
+    <text x="452" y="434" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="bold" fill="#fbbf24">GATED COMMUNITY</text>
     <text x="452" y="466" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#e2e8f0">Pool &#183; Club House &#183; Gated</text>
 
     <line x1="64" y1="516" x2="${W - 64}" y2="516" stroke="#1e293b" stroke-width="2"/>

@@ -53,12 +53,12 @@ const POSTER_SPECS = [
   {
     slug: "farmhouse",
     photo: "farmhouse.jpeg",
-    eyebrow: "HMDA APPROVED 1BHK FARMHOUSE",
+    eyebrow: "GATED 1BHK FARMHOUSE",
     headlineLines: ["YOUR DREAM", "FARMHOUSE"],
     photoFocus: "attention",
     features: [
       "121 sq.yards plot",
-      "350 sq.ft built-up",
+      "400 sq.ft built-up",
       "2 years free maintenance",
       "Gated with 24/7 security",
     ],

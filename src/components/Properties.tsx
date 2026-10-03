@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { properties } from "../data";
+import { currentOffer, properties, trustBadges } from "../data";
 import { business } from "../config/site";
 import { trackEvent } from "../lib/analytics";
 import { enquiryMessage } from "../lib/cta";
@@ -22,7 +22,7 @@ export function Properties() {
           🏠 Our <span className="text-emerald-400">Properties</span>
         </h2>
         <p className="text-slate-400 max-w-xl mx-auto">
-          HMDA approved layouts in Kothur — book your weekend house before the
+          Gated farmhouse layouts in Kothur — book your weekend house before the
           good plots go. 🌿
         </p>
       </motion.div>
@@ -110,6 +110,76 @@ export function Properties() {
           </motion.article>
         ))}
       </div>
+
+      <OfferBanner />
+      <TrustRow />
     </section>
+  );
+}
+
+/**
+ * The festive offer sits directly under the price cards, because that is where
+ * a buyer is deciding. Dated and value-bearing, so it reads as an offer rather
+ * than a permanent feature of the project.
+ */
+function OfferBanner() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6 }}
+      className="mt-12 max-w-4xl mx-auto bg-gradient-to-br from-amber-500/15 to-emerald-500/10 border border-amber-400/40 rounded-2xl p-6 sm:p-8"
+    >
+      <div className="flex flex-wrap items-baseline gap-3 mb-4">
+        <span className="text-2xl" aria-hidden="true">
+          🪔
+        </span>
+        <h3 className="text-xl sm:text-2xl font-bold text-white">
+          {currentOffer.title}
+        </h3>
+        <span className="text-lg font-bold text-amber-300">
+          {currentOffer.price}
+        </span>
+      </div>
+
+      <ul className="grid sm:grid-cols-2 gap-2 mb-4">
+        {currentOffer.perks.map((perk) => (
+          <li key={perk} className="flex items-start gap-2 text-slate-200 text-sm">
+            <span className="text-emerald-400" aria-hidden="true">
+              ✓
+            </span>
+            {perk}
+          </li>
+        ))}
+      </ul>
+
+      <p className="text-slate-400 text-xs mb-4">{currentOffer.note}</p>
+
+      <a
+        href={whatsappLink(enquiryMessage())}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => trackEvent("whatsapp_click", { source: "offer_banner" })}
+        className="inline-block bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold px-6 py-3 rounded-xl transition-colors"
+      >
+        🎁 Claim This Offer
+      </a>
+    </motion.div>
+  );
+}
+
+function TrustRow() {
+  return (
+    <div className="mt-10 flex flex-wrap justify-center gap-8 sm:gap-16">
+      {trustBadges.map((badge) => (
+        <div key={badge.label} className="text-center">
+          <div className="text-3xl sm:text-4xl font-black text-emerald-400">
+            {badge.value}
+          </div>
+          <div className="text-slate-400 text-sm mt-1">{badge.label}</div>
+        </div>
+      ))}
+    </div>
   );
 }

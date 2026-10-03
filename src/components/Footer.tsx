@@ -5,6 +5,7 @@ import { trackEvent } from "../lib/analytics";
 import { enquiryMessage } from "../lib/cta";
 import { whatsappLink } from "../config/site";
 import { navItems } from "../data";
+import { ADMIN_HASH } from "../lib/routing";
 
 export function Footer({ onNavigate }: { onNavigate: (id: string) => void }) {
   // Derived at render time so the copyright never goes stale again.
@@ -24,7 +25,7 @@ export function Footer({ onNavigate }: { onNavigate: (id: string) => void }) {
           </div>
           <p className="text-slate-500 text-sm">{business.brand}</p>
           <p className="text-slate-500 text-xs mt-1">
-            {business.project} — HMDA Approved
+            {business.project} — Gated Community
           </p>
         </div>
 
@@ -62,7 +63,13 @@ export function Footer({ onNavigate }: { onNavigate: (id: string) => void }) {
 
       <p className="text-slate-600 text-xs text-center mt-8 pt-6 border-t border-slate-800">
         © {year} {business.brand}. All rights reserved. · Prices indicative,
-        confirm on site visit.
+        confirm on site visit. ·{" "}
+        <a
+          href={ADMIN_HASH}
+          className="hover:text-emerald-400 transition-colors"
+        >
+          Admin
+        </a>
       </p>
     </footer>
   );

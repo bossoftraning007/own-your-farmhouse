@@ -39,7 +39,7 @@ export function Hero({ onViewProperties }: Props) {
           transition={{ duration: 0.8 }}
         >
           <span className="inline-block bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-sm px-4 py-1 rounded-full mb-6">
-            🌿 HMDA Approved — Near Kothur, Hyderabad
+            🌿 Gated Community — Near Kothur, Hyderabad
           </span>
 
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight">

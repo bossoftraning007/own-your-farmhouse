@@ -77,7 +77,7 @@ export function SharePoster() {
               </span>
             </div>
             <div className="inline-block px-4 py-1 bg-yellow-500 text-black text-xs font-bold rounded-full uppercase tracking-wider">
-              🎪 HMDA Approved
+              🎪 Gated Community
             </div>
           </div>
 

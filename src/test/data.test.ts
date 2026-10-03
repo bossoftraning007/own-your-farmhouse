@@ -63,8 +63,8 @@ describe("site data integrity", () => {
     }
   });
 
-  it("claims HMDA approval in the legal documents", () => {
-    expect(legalDocs.some((d) => /HMDA/i.test(d.title))).toBe(true);
+  it("offers a registered sale deed in the legal documents", () => {
+    expect(legalDocs.some((d) => /sale deed/i.test(d.title))).toBe(true);
   });
 
   it("answers the buyer's most common questions in the FAQ", () => {
@@ -73,8 +73,21 @@ describe("site data integrity", () => {
       expect(faq.q.length).toBeGreaterThan(10);
       expect(faq.a.length).toBeGreaterThan(30);
     }
-    expect(faqs.some((f) => /HMDA/i.test(f.q + f.a))).toBe(true);
     expect(faqs.some((f) => /airport/i.test(f.q + f.a))).toBe(true);
+  });
+
+  it("never mentions HMDA anywhere in the content", () => {
+    // The approval claim was removed site-wide. This keeps it from creeping
+    // back in through a future data edit.
+    const everything = JSON.stringify({
+      properties,
+      legalDocs,
+      faqs,
+      amenities,
+      nearbyPlaces,
+      galleryImages,
+    });
+    expect(everything).not.toMatch(/HMDA/i);
   });
 
   it("has amenities to fill the amenity grid", () => {

@@ -122,7 +122,7 @@ function upsertStructuredData() {
         "@id": `${SITE_URL}/#product`,
         name: `${business.project} - ${business.type}`,
         image: absoluteUrl("/generated/farmhouse.jpg"),
-        description: `HMDA approved 1BHK farmhouse on a 121 sq.yards plot with 350 sq.ft built-up area, in a gated community with swimming pool and club house.`,
+        description: `1BHK farmhouse on a 121 sq.yards plot with 400 sq.ft built-up area, in a gated community with swimming pool and club house.`,
         brand: { "@type": "Brand", name: business.brand },
         offers: {
           "@type": "Offer",

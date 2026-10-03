@@ -68,6 +68,23 @@ const STALE_PRICES = [
 ];
 
 /**
+ * The HMDA approval claim was removed from the whole site at the owner's
+ * request. It is a strong trust signal and a valuable search keyword, so this
+ * is here to make removing it a deliberate act rather than an accident that
+ * gets reverted by a well-meaning copy edit.
+ */
+const RETIRED_CLAIMS = [
+  {
+    needle: "HMDA",
+    why: "the approval claim was removed site-wide at the owner's request",
+  },
+  {
+    needle: "350 sq.ft",
+    why: "built-up area is 400 sq.ft across every property and asset",
+  },
+];
+
+/**
  * This file necessarily contains the strings it forbids, so exclude itself
  * and every other test file - tests legitimately encode forbidden values in
  * order to assert on them.
@@ -161,6 +178,16 @@ describe("pricing stays canonical", () => {
       expect(
         offenders.map((f) => path.relative(ROOT, f).replace(/\\/g, "/")),
       ).toEqual([]);
+    });
+  }
+
+  for (const { needle, why } of RETIRED_CLAIMS) {
+    it(`never mentions "${needle}" - ${why}`, () => {
+      const offenders = priceFiles
+        .filter((file) => new RegExp(needle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i").test(readFileSync(file, "utf-8")))
+        .map((f) => path.relative(ROOT, f).replace(/\\/g, "/"));
+
+      expect(offenders).toEqual([]);
     });
   }
 

@@ -138,7 +138,7 @@ export function Contact() {
         </div>
 
         <p className="text-center text-slate-500 text-xs mt-8">
-          {business.brand} · {business.project} · HMDA Approved · Site visits
+          {business.brand} · {business.project} · Gated Community · Site visits
           daily 9am&ndash;7pm
         </p>
       </div>

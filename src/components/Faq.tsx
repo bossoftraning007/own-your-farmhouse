@@ -14,11 +14,9 @@ export function Faq() {
         className="text-center mb-10"
       >
         <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
-          ❓ Frequently <span className="text-emerald-400">Asked</span>
+          <span className="text-emerald-400">Questions</span>{" "}
+          <span className="text-white">Answered</span>
         </h2>
-        <p className="text-slate-400">
-          The things buyers usually ask before booking a site visit.
-        </p>
       </motion.div>
 
       <div className="space-y-3">

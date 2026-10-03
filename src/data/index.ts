@@ -40,12 +40,12 @@ export const properties: Property[] = [
     price: price.numeric,
     priceLabel: price.display,
     plot: "121 sq.yards",
-    house: "350 sq.ft",
+    house: "400 sq.ft",
     bhk: "1BHK",
     badge: "Most Popular",
     featured: true,
     highlights: [
-      "HMDA approved layout",
+      "Approved layout plan",
       "2 years free maintenance",
       "Gated community with 24/7 security",
       "Swimming pool & club house access",
@@ -64,7 +64,7 @@ export const properties: Property[] = [
     price: price.numeric,
     priceLabel: price.display,
     plot: "121 sq.yards",
-    house: "350 sq.ft",
+    house: "400 sq.ft",
     bhk: "1BHK",
     // No discount badge here on purpose. The old badge claimed the unit was
     // reduced from 24 lakhs, which stopped being true the moment 24 lakhs
@@ -74,7 +74,7 @@ export const properties: Property[] = [
     featured: false,
     highlights: [
       "Ideal for weekly family getaways",
-      "HMDA approved layout",
+      "Approved layout plan",
       "Fruit plants with the plot",
       "30ft internal roads",
       "Gated and guarded",
@@ -143,10 +143,81 @@ export const nearbyPlaces = [
   { icon: "✈️", place: "Shamshabad Airport", distance: "15 mins drive" },
   { icon: "🛣️", place: "ORR Exit 16", distance: "15 mins drive" },
   { icon: "🏢", place: "Gachibowli IT SEZ", distance: "30 mins drive" },
+  { icon: "🏙️", place: "Hyderabad City", distance: "40 mins drive" },
 ];
 
+/**
+ * Current festive offer, shown on the site and editable from the dashboard.
+ *
+ * These are dated claims with real-world value attached - a free silver idol
+ * and free furniture are promises, not decoration - so they live in data with
+ * an explicit end date rather than being scattered through components.
+ */
+export const currentOffer = {
+  title: "Dussehra Special Price",
+  price: price.display,
+  perks: [
+    "100 gram Silver Idol on spot booking",
+    "Free furniture on booking",
+    "Free family site visit cab on Sundays",
+    "121 sq.yards plot + 400 sq.ft 1BHK house",
+  ],
+  note: "Offer valid for limited bookings. Confirm availability on WhatsApp before you visit.",
+} as const;
+
+/**
+ * Social proof. Both numbers are the owner's claims and are shown verbatim.
+ */
+export const trustBadges = [
+  { value: "500+", label: "Happy Customers" },
+  { value: "4 Years", label: "Of Trust" },
+] as const;
+
+/**
+ * Ready-to-send WhatsApp broadcasts.
+ *
+ * These are pasted into WhatsApp by hand, not rendered on the site, so they are
+ * stored as plain text and surfaced in the dashboard with a copy button. Kept
+ * in data so the price inside them cannot drift from price.display - that
+ * mismatch is invisible until a customer is quoted the wrong number.
+ */
+export const campaigns = [
+  {
+    id: "dussehra",
+    label: "Dussehra Special Price",
+    body: [
+      "Good morning sir and madam 🙏",
+      "*Festival Offer*",
+      "",
+      `✅ ${price.display}/- Dussehra Special Price`,
+      "✅ 100 gram Silver Idol on spot booking",
+      "✅ FREE Furniture on booking",
+      "✅ FREE Family Site Visit Cab 🚗 - Sunday",
+      "✅ 121 sq.yards + 400 sq.ft 1BHK House",
+    ].join("\n"),
+  },
+  {
+    id: "project-launch",
+    label: "New Project Announcement",
+    body: [
+      "🌞 GOOD MORNING - BRIGHT CUSTOMERS!",
+      "",
+      "We at BRIGHT PROPERTIES are happy to present our latest project:",
+      `🏡 BEAUTIFUL FARMHOUSE PROJECT @ JUST ${price.numeric / 100000} LAKHS`,
+      "",
+      "📍 Just 40 minutes drive from Hyderabad",
+      "🎁 Farmhouse + Garden + Club House + Swimming Pool + Kids Play Area + Birthday Stage",
+      "🏆 500+ Happy Customers - 4 Years of Trust",
+      "",
+      "For Free Site Visit Contact:",
+      "📞 BRIGHT PROPERTIES - 9849754071",
+      "9505903371 🤝",
+    ].join("\n"),
+  },
+] as const;
+
 export const legalDocs = [
-  { icon: "✅", title: "HMDA Approved", detail: "Approved layout plan" },
+  { icon: "✅", title: "Approved Layout", detail: "Sanctioned layout plan" },
   {
     icon: "📜",
     title: "Sale Deed with MRO",
@@ -166,12 +237,8 @@ export const legalDocs = [
 
 export const faqs = [
   {
-    q: "Is the layout HMDA approved?",
-    a: "Yes. The layout is HMDA approved, which means the plots carry clear title and can be registered through a sale deed with the MRO.",
-  },
-  {
     q: "What is included in the price?",
-    a: `The 1BHK farmhouse unit at ${price.display} includes a 121 sq.yards plot with a 350 sq.ft house, plus 2 years of free maintenance and access to the pool, club house and gated community amenities.`,
+    a: `The 1BHK farmhouse unit at ${price.display} includes a 121 sq.yards plot with a 400 sq.ft house, plus 2 years of free maintenance and access to the pool, club house and gated community amenities.`,
   },
   {
     q: "How far is it from Hyderabad airport?",
@@ -184,5 +251,9 @@ export const faqs = [
   {
     q: "Is site visit allowed?",
     a: "Yes, site visits are available every day, and especially convenient on weekends. Message us on WhatsApp to fix a time and we will share the exact location.",
+  },
+  {
+    q: "Is a free site visit cab available?",
+    a: "Yes. We arrange a free family site visit cab on Sundays so you can visit the site together and see the layout, club house and pool in person before you book.",
   },
 ];
