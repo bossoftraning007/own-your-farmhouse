@@ -137,9 +137,77 @@ describe("LeadForm", () => {
     await user.type(screen.getByLabelText(/mobile number/i), "9505903371");
     await user.click(screen.getByRole("button", { name: /send enquiry/i }));
 
-    expect(await screen.findByText(/request received/i)).toBeInTheDocument();
+    expect(await screen.findByText(/details captured/i)).toBeInTheDocument();
 
     openSpy.mockRestore();
+  });
+
+  /**
+   * The lead-loss path this replaces.
+   *
+   * iOS Safari and several popup blockers suppress `window.open`. The old code
+   * showed "Request received" and let the visitor believe we had their
+   * details, while the message went nowhere. The success state must therefore
+   * always render a real anchor that completes the handover.
+   */
+  it("offers a real WhatsApp link when the popup is blocked", async () => {
+    const user = userEvent.setup();
+    // A blocked popup returns null, which is exactly what iOS Safari does.
+    const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+    render(<LeadForm />);
+
+    await user.type(screen.getByLabelText(/your name/i), "Ramesh Kumar");
+    await user.type(screen.getByLabelText(/mobile number/i), "9505903371");
+    await user.click(screen.getByRole("button", { name: /send enquiry/i }));
+
+    const fallback = await screen.findByRole("link", {
+      name: /send my details on whatsapp/i,
+    });
+    const href = fallback.getAttribute("href") ?? "";
+
+    expect(href).toContain(`https://wa.me/${contacts.whatsapp}?text=`);
+    expect(decodeURIComponent(href)).toContain("Ramesh Kumar");
+    expect(decodeURIComponent(href)).toContain("9505903371");
+
+    openSpy.mockRestore();
+  });
+
+  it("offers the phone number as a second fallback", async () => {
+    const user = userEvent.setup();
+    vi.spyOn(window, "open").mockImplementation(() => null);
+    render(<LeadForm />);
+
+    await user.type(screen.getByLabelText(/your name/i), "Ramesh");
+    await user.type(screen.getByLabelText(/mobile number/i), "9505903371");
+    await user.click(screen.getByRole("button", { name: /send enquiry/i }));
+
+    await screen.findByRole("link", { name: /send my details on whatsapp/i });
+
+    // Both numbers are reachable, so a blocked WhatsApp is never terminal.
+    const telLinks = screen
+      .getAllByRole("link")
+      .map((a) => a.getAttribute("href"))
+      .filter((h) => h?.startsWith("tel:+")) as string[];
+
+    expect(telLinks).toContain(`tel:+${contacts.whatsapp}`);
+    expect(telLinks).toContain(`tel:+${contacts.inquiry}`);
+  });
+
+  it("returns to an empty form after sending another enquiry", async () => {
+    const user = userEvent.setup();
+    vi.spyOn(window, "open").mockImplementation(() => null);
+    render(<LeadForm />);
+
+    await user.type(screen.getByLabelText(/your name/i), "Ramesh");
+    await user.type(screen.getByLabelText(/mobile number/i), "9505903371");
+    await user.click(screen.getByRole("button", { name: /send enquiry/i }));
+
+    await user.click(
+      await screen.findByRole("button", { name: /send another enquiry/i }),
+    );
+
+    expect(screen.getByLabelText(/your name/i)).toHaveValue("");
+    expect(screen.getByLabelText(/mobile number/i)).toHaveValue("");
   });
 
   it("marks invalid fields with aria-invalid for screen readers", async () => {

@@ -58,6 +58,23 @@ export const location = {
   country: "IN",
 } as const;
 
+/**
+ * Search snippet copy.
+ *
+ * Lengths are deliberate and tested. Google truncates titles around 580px
+ * (roughly 60-65 characters) and descriptions around 155-160. The previous
+ * title was 87 characters and the description 203, so both were being cut off
+ * mid-word on every search result.
+ */
+export const seo = {
+  title: "1BHK Farmhouse for Sale near Kothur, Hyderabad | HMDA Approved",
+  description:
+    "HMDA approved 1BHK farmhouse near Kothur on NH-44, Hyderabad. 121 sq.yards plot, pool, club house, gated. From ₹21L. Call 95059 03371.",
+  ogImage: "/og/og-image.jpg",
+  ogImageAlt:
+    "Green Orchid Farm Land - HMDA approved 1BHK farmhouse near JP Dargah, Kothur, Hyderabad. Starting ₹21,00,000.",
+} as const;
+
 /** Build a wa.me deep link, optionally with a prefilled message. */
 export function whatsappLink(message?: string): string {
   const base = `https://wa.me/${contacts.whatsapp}`;

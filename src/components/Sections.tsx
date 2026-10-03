@@ -71,7 +71,15 @@ export function Location() {
         <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
           📍 Prime <span className="text-emerald-400">Location</span>
         </h2>
-        <p className="text-slate-400">{location.address}</p>
+        {/* Location keywords in a real heading, not only body copy - this is the
+            section that ranks for "farmhouse near Kothur" style searches. */}
+        <h3 className="text-slate-300 text-base sm:text-lg font-medium mb-2">
+          Farmhouse near Kothur and JP Dargah, Bangalore Highway NH-44,
+          Hyderabad
+        </h3>
+        <p className="text-slate-400">
+          15 minutes from Shamshabad International Airport
+        </p>
       </motion.div>
 
       <div className="grid md:grid-cols-2 gap-8">

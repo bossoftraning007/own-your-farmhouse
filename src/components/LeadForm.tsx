@@ -1,9 +1,9 @@
 import { useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
-import { contacts } from "../config/site";
+import { contacts, whatsappLink } from "../config/site";
 import { trackEvent } from "../lib/analytics";
-import { whatsappLink } from "../config/site";
 import { isValidEmail, isValidIndianPhone } from "../lib/validate";
+import { buildLeadMessage, emptyLeadFields, type LeadFields } from "../lib/lead";
 
 /**
  * Optional Formspree endpoint. Set in `.env`:
@@ -16,43 +16,33 @@ import { isValidEmail, isValidIndianPhone } from "../lib/validate";
 
 const ENDPOINT = import.meta.env.VITE_FORMSPREE_ENDPOINT as string | undefined;
 
-type Status = "idle" | "submitting" | "sent" | "error";
+type Status = "idle" | "submitting" | "sent";
 
-interface FormFields {
-  name: string;
-  phone: string;
-  email: string;
-  purpose: string;
-  message: string;
-}
-
-const emptyFields: FormFields = {
-  name: "",
-  phone: "",
-  email: "",
-  purpose: "1BHK Farmhouse",
-  message: "",
-};
-
-/**
- * Lead capture form.
- *
- * With Formspree configured it POSTs the enquiry. Without it, submitting opens
- * WhatsApp with the details already typed in - so the site captures leads even
- * on a fresh fork with no environment set up.
- */
 export function LeadForm() {
-  const [fields, setFields] = useState<FormFields>(emptyFields);
+  const [fields, setFields] = useState<LeadFields>(emptyLeadFields);
   const [status, setStatus] = useState<Status>("idle");
-  const [errors, setErrors] = useState<Partial<Record<keyof FormFields, string>>>(
+  const [errors, setErrors] = useState<Partial<Record<keyof LeadFields, string>>>(
     {},
   );
 
-  const update = (key: keyof FormFields) => (value: string) =>
+  /**
+   * The deep link the visitor needs in the success state.
+   *
+   * `window.open` cannot be trusted to report success: with `noopener` the
+   * spec requires it to return null whether or not the popup opened, and iOS
+   * Safari blocks it outright in plenty of contexts. So the popup is treated as
+   * a convenience and this link is treated as the actual delivery mechanism -
+   * it is always rendered, and it is a real anchor, so it cannot be suppressed.
+   */
+  const [handoff, setHandoff] = useState<{ url: string; label: string } | null>(
+    null,
+  );
+
+  const update = (key: keyof LeadFields) => (value: string) =>
     setFields((prev) => ({ ...prev, [key]: value }));
 
   const validate = (): boolean => {
-    const next: Partial<Record<keyof FormFields, string>> = {};
+    const next: Partial<Record<keyof LeadFields, string>> = {};
     if (fields.name.trim().length < 2) next.name = "Please enter your name";
     if (!isValidIndianPhone(fields.phone)) {
       next.phone = "Enter a valid 10-digit mobile number";
@@ -64,32 +54,35 @@ export function LeadForm() {
     return Object.keys(next).length === 0;
   };
 
+  /**
+   * Hand the enquiry to WhatsApp.
+   *
+   * Attempts the popup inside the submit gesture, then always records the link
+   * so the success state can offer a tap-through if the popup did not appear.
+   */
+  const handOffToWhatsApp = (next: LeadFields, via: string) => {
+    const url = whatsappLink(buildLeadMessage(next));
+
+    window.open(url, "_blank", "noopener,noreferrer");
+    setHandoff({ url, label: next.purpose });
+    setStatus("sent");
+    setFields(emptyLeadFields);
+
+    trackEvent("lead_submit", {
+      purpose: next.purpose,
+      has_email: Boolean(next.email),
+      via,
+    });
+  };
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!validate()) return;
 
-    const message = [
-      `New enquiry from the website`,
-      "",
-      `Name: ${fields.name}`,
-      `Phone: ${fields.phone}`,
-      fields.email ? `Email: ${fields.email}` : "",
-      `Interested in: ${fields.purpose}`,
-      fields.message ? `Notes: ${fields.message}` : "",
-    ]
-      .filter(Boolean)
-      .join("\n");
-
-    trackEvent("lead_submit", {
-      purpose: fields.purpose,
-      has_email: Boolean(fields.email),
-      via: ENDPOINT ? "formspree" : "whatsapp_fallback",
-    });
+    const submitted = fields;
 
     if (!ENDPOINT) {
-      window.open(whatsappLink(message), "_blank", "noopener,noreferrer");
-      setStatus("sent");
-      setFields(emptyFields);
+      handOffToWhatsApp(submitted, "whatsapp_only");
       return;
     }
 
@@ -101,17 +94,26 @@ export function LeadForm() {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(fields),
+        body: JSON.stringify(submitted),
       });
       if (!response.ok) throw new Error(`Formspree returned ${response.status}`);
 
+      // Stored by email, so WhatsApp is still offered as a fast confirmation.
+      setHandoff({
+        url: whatsappLink(buildLeadMessage(submitted)),
+        label: submitted.purpose,
+      });
       setStatus("sent");
-      setFields(emptyFields);
+      setFields(emptyLeadFields);
     } catch {
       // Never strand a lead on a network failure: fall back to WhatsApp.
-      window.open(whatsappLink(message), "_blank", "noopener,noreferrer");
-      setStatus("sent");
+      handOffToWhatsApp(submitted, "formspree_failed");
     }
+  };
+
+  const reset = () => {
+    setStatus("idle");
+    setHandoff(null);
   };
 
   const inputClass = (hasError?: string) =>
@@ -140,21 +142,83 @@ export function LeadForm() {
           role="status"
         >
           <p className="text-3xl mb-2">✅</p>
-          <p className="text-white font-semibold mb-1">Request received</p>
-          <p className="text-slate-400 text-sm">
-            WhatsApp should have opened with your details. If it did not, call
-            us on{" "}
-            <a
-              href={`tel:+${contacts.whatsapp}`}
-              className="text-emerald-400 font-semibold"
-            >
-              {contacts.whatsappDisplay}
-            </a>
-            .
+          <p className="text-white font-semibold mb-1">
+            Details captured
           </p>
+
+          {handoff ? (
+            <>
+              {/*
+                The enquiry is only truly delivered once the message reaches
+                WhatsApp. The popup above is a convenience that iOS Safari and
+                some popup blockers suppress, so this block is the guarantee -
+                a real anchor that can never be blocked.
+              */}
+              <p className="text-slate-300 text-sm mb-4">
+                One last tap to send it to us on WhatsApp — if a WhatsApp tab
+                already opened, you can close it and use this button instead.
+              </p>
+
+              <a
+                href={handoff.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() =>
+                  trackEvent("whatsapp_click", {
+                    source: "lead_form_success_fallback",
+                  })
+                }
+                className="flex w-full items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-4 rounded-xl transition-colors"
+              >
+                💬 Send my details on WhatsApp
+              </a>
+
+              <p className="text-slate-500 text-xs mt-3 mb-1">
+                About {handoff.label} · your details are already filled in
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-3 mt-4">
+                <a
+                  href={`tel:+${contacts.whatsapp}`}
+                  onClick={() =>
+                    trackEvent("call_click", { source: "lead_form_success" })
+                  }
+                  className="flex-1 inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-colors"
+                >
+                  📞 Call {contacts.whatsappDisplay}
+                </a>
+                <a
+                  href={`tel:+${contacts.inquiry}`}
+                  onClick={() =>
+                    trackEvent("call_click", {
+                      source: "lead_form_success_secondary",
+                    })
+                  }
+                  className="flex-1 inline-flex items-center justify-center gap-2 border border-slate-600 hover:bg-slate-800 text-slate-200 font-semibold py-3 rounded-xl transition-colors"
+                >
+                  📞 {contacts.inquiryDisplay}
+                </a>
+              </div>
+              <p className="text-slate-500 text-xs mt-3">
+                Prefer to talk? We answer 9am–7pm, every day.
+              </p>
+            </>
+          ) : (
+            <p className="text-slate-400 text-sm">
+              We have your details and will call you back. If it is urgent, call{" "}
+              <a
+                href={`tel:+${contacts.whatsapp}`}
+                className="text-emerald-400 font-semibold"
+              >
+                {contacts.whatsappDisplay}
+              </a>
+              .
+            </p>
+          )}
+
           <button
-            onClick={() => setStatus("idle")}
-            className="mt-4 text-slate-400 hover:text-emerald-400 text-sm underline underline-offset-4"
+            onClick={reset}
+            className="mt-5 text-slate-400 hover:text-emerald-400 text-sm underline underline-offset-4"
           >
             Send another enquiry
           </button>

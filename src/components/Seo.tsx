@@ -1,5 +1,13 @@
 import { useEffect } from "react";
-import { absoluteUrl, business, contacts, location, SITE_URL } from "../config/site";
+import {
+  absoluteUrl,
+  business,
+  contacts,
+  location,
+  seo,
+  SITE_URL,
+} from "../config/site";
+import { faqs } from "../data";
 
 /**
  * index.html holds the tags Google reads on first crawl, but social scrapers
@@ -8,7 +16,7 @@ import { absoluteUrl, business, contacts, location, SITE_URL } from "../config/s
  * can never drift from the config module.
  */
 
-const OG_IMAGE = "/og/og-image.jpg";
+const OG_IMAGE = seo.ogImage;
 
 function upsertMeta(selector: string, attr: "name" | "property", key: string, content: string) {
   let el = document.head.querySelector<HTMLMetaElement>(selector);
@@ -32,8 +40,8 @@ function upsertCanonical(href: string) {
 
 export function Seo() {
   useEffect(() => {
-    const title = `${business.project} | ${business.type} Near Kothur Hyderabad | HMDA Approved ${business.price}`;
-    const description = `Buy HMDA approved 1BHK farmhouse near Kothur on Bangalore Highway NH-44, Hyderabad. Starting ${business.price}. Swimming pool, club house, gated community, 15 mins from Shamshabad Airport. Call ${contacts.whatsappDisplay}.`;
+    const title = seo.title;
+    const description = seo.description;
     const image = absoluteUrl(OG_IMAGE);
 
     document.title = title;
@@ -44,12 +52,17 @@ export function Seo() {
     upsertMeta('meta[property="og:description"]', "property", "og:description", description);
     upsertMeta('meta[property="og:url"]', "property", "og:url", SITE_URL);
     upsertMeta('meta[property="og:image"]', "property", "og:image", image);
+    upsertMeta('meta[property="og:image:width"]', "property", "og:image:width", "1200");
+    upsertMeta('meta[property="og:image:height"]', "property", "og:image:height", "630");
+    upsertMeta('meta[property="og:image:type"]', "property", "og:image:type", "image/jpeg");
+    upsertMeta('meta[property="og:image:alt"]', "property", "og:image:alt", seo.ogImageAlt);
     upsertMeta('meta[property="og:type"]', "property", "og:type", "website");
     upsertMeta('meta[property="og:site_name"]', "property", "og:site_name", business.brand);
     upsertMeta('meta[name="twitter:card"]', "name", "twitter:card", "summary_large_image");
     upsertMeta('meta[name="twitter:title"]', "name", "twitter:title", title);
     upsertMeta('meta[name="twitter:description"]', "name", "twitter:description", description);
     upsertMeta('meta[name="twitter:image"]', "name", "twitter:image", image);
+    upsertMeta('meta[name="twitter:image:alt"]', "name", "twitter:image:alt", seo.ogImageAlt);
 
     upsertStructuredData();
   }, []);
@@ -122,32 +135,18 @@ function upsertStructuredData() {
       {
         "@type": "FAQPage",
         "@id": `${SITE_URL}/#faq`,
-        mainEntity: [
-          {
-            "@type": "Question",
-            name: "Is the layout HMDA approved?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "Yes. The layout is HMDA approved with a registered sale deed, so the plots can be registered through the MRO.",
-            },
+        // Generated from the visible FAQ data so every question on the page is
+        // eligible for a rich result. This used to be a hand-copied subset,
+        // which meant most questions were silently ineligible and the copy
+        // could drift from what visitors actually read.
+        mainEntity: faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.q,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.a,
           },
-          {
-            "@type": "Question",
-            name: "How far is the site from Hyderabad airport?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "About 15 minutes from Shamshabad International Airport and roughly 30 minutes from Gachibowli IT SEZ.",
-            },
-          },
-          {
-            "@type": "Question",
-            name: "Are site visits available?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "Yes, site visits are available every day, with extra availability on weekends. Message on WhatsApp to fix a time.",
-            },
-          },
-        ],
+        })),
       },
     ],
   };
