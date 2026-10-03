@@ -1,4 +1,4 @@
-import { SITE_URL } from "../config/site";
+import { price, SITE_URL } from "../config/site";
 
 export const SHARE_URL = SITE_URL;
 
@@ -10,7 +10,7 @@ export function whatsappShare(message: string): string {
 export const posterShareMessage = [
   "Weekend Houses at Green Orchid Farm Land! 🏡",
   "",
-  "💰 Starting ₹21 Lakhs",
+  `💰 ${price.headline}`,
   "📍 Near Kothur, JP Dargah, Bangalore Highway NH-44",
   "🌿 HMDA approved · Gated · Swimming pool · Club house",
   "✈️ 15 mins from Shamshabad Airport",
@@ -21,8 +21,8 @@ export const posterShareMessage = [
 export const siteShareMessage = [
   "Check out this farmhouse! 🏡",
   "",
-  "🌿 Green Orchid Farm Land, Kothur",
-  "💰 Starting ₹21 Lakhs · HMDA approved",
+  `🌿 Green Orchid Farm Land, Kothur`,
+  `💰 ${price.headline} · HMDA approved`,
   "🏊 Swimming pool · 🏛️ Club house · 🔒 Gated community",
   "",
   `View details: ${SHARE_URL}`,

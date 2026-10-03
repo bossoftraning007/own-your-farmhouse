@@ -4,6 +4,7 @@ import {
   business,
   contacts,
   location,
+  price,
   seo,
   SITE_URL,
 } from "../config/site";
@@ -83,7 +84,7 @@ function upsertStructuredData() {
         url: SITE_URL,
         telephone: `+${contacts.whatsapp}`,
         image: absoluteUrl(OG_IMAGE),
-        priceRange: business.price,
+        priceRange: price.display,
         address: {
           "@type": "PostalAddress",
           streetAddress: "Near JP Dargah, Bangalore Highway NH-44",
@@ -120,12 +121,12 @@ function upsertStructuredData() {
         "@type": "Product",
         "@id": `${SITE_URL}/#product`,
         name: `${business.project} - ${business.type}`,
-        image: absoluteUrl("/posters/farmhouse.jpeg"),
+        image: absoluteUrl("/generated/farmhouse.jpg"),
         description: `HMDA approved 1BHK farmhouse on a 121 sq.yards plot with 350 sq.ft built-up area, in a gated community with swimming pool and club house.`,
         brand: { "@type": "Brand", name: business.brand },
         offers: {
           "@type": "Offer",
-          price: "2100000",
+          price: String(price.numeric),
           priceCurrency: "INR",
           availability: "https://schema.org/InStock",
           url: SITE_URL,

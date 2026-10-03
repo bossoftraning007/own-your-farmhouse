@@ -1,4 +1,8 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
+import { price, whatsappLink } from "../config/site";
+
+import { enquiryMessage } from "../lib/cta";
+import { trackEvent } from "../lib/analytics";
 
 interface Props {
   children: ReactNode;
@@ -47,10 +51,13 @@ export class ErrorBoundary extends Component<Props, State> {
               Green Orchid Farm Land
             </p>
             <p className="text-slate-300 text-sm mb-3">
-              1BHK Farmhouse · ₹21,00,000 · Kothur, Hyderabad
+              1BHK Farmhouse · {price.display} · Kothur, Hyderabad
             </p>
             <a
-              href="https://wa.me/919505903371"
+              href={whatsappLink(enquiryMessage())}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackEvent("whatsapp_click", { source: "error_boundary" })}
               className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold px-5 py-2.5 rounded-full transition-colors"
             >
               💬 WhatsApp Us

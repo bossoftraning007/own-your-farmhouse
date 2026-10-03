@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { business, contacts } from "../config/site";
+import { business, contacts, price } from "../config/site";
 import { trackEvent } from "../lib/analytics";
 import {
   copyToClipboard,
@@ -107,7 +107,7 @@ export function SharePoster() {
             <p className="text-yellow-300 text-xs font-bold tracking-wider uppercase mb-1">
               💫 Special Price
             </p>
-            <p className="text-white text-3xl font-black">{business.price}</p>
+            <p className="text-white text-3xl font-black">{price.display}</p>
             <p className="text-white/80 text-xs">1BHK Farmhouse • 121 sq.yards</p>
           </div>
 

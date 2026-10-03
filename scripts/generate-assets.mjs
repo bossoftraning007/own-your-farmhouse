@@ -32,6 +32,15 @@ const OG_DIR = path.join(PUBLIC, "og");
 const SITE_URL = "https://myfarmhouse.vercel.app";
 const WHATSAPP_NUMBER = "919505903371";
 
+/**
+ * The price is rendered into image pixels, so it has to be repeated here.
+ * src/config/site.ts is the authority; `npm test` fails if the two disagree,
+ * because a stale price baked into a poster is the one bug no code change can
+ * catch.
+ */
+const PRICE_DISPLAY = "₹24,00,000";
+const PRICE_SHORT = "₹24L";
+
 const AVATAR = {
   green: "#10b981",
   dark: "#0f172a",
@@ -188,7 +197,7 @@ async function generateOgImage() {
     <text x="64" y="366" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#cbd5e1">HMDA Approved 1BHK Farmhouse &#183; 121 sq.yards</text>
 
     <rect x="64" y="404" width="360" height="76" rx="38" fill="#dc2626"/>
-    <text x="244" y="455" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="bold" fill="${AVATAR.white}">&#8377;21,00,000</text>
+    <text x="244" y="455" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="bold" fill="${AVATAR.white}">${PRICE_DISPLAY}</text>
 
     <text x="452" y="434" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="bold" fill="#fbbf24">HMDA APPROVED</text>
     <text x="452" y="466" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#e2e8f0">Pool &#183; Club House &#183; Gated</text>
@@ -196,7 +205,7 @@ async function generateOgImage() {
     <line x1="64" y1="516" x2="${W - 64}" y2="516" stroke="#1e293b" stroke-width="2"/>
 
     <text x="64" y="560" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#e2e8f0">Near Kothur &#183; JP Dargah &#183; Bangalore Highway NH-44</text>
-    <text x="64" y="596" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="${AVATAR.green}" font-weight="bold">+91 95059 03371  &#183;  15 mins from Shamshabad Airport</text>
+    <text x="64" y="596" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="${AVATAR.green}" font-weight="bold">+91 95059 03371&#160;&#160;&#183;&#160;&#160;Starting ${PRICE_SHORT}&#160;&#160;&#183;&#160;&#160;15 mins from Shamshabad Airport</text>
   </svg>`);
 
   const outPath = path.join(OG_DIR, "og-image.jpg");

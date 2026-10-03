@@ -14,6 +14,31 @@
 /** Canonical production URL. Used for sitemap, robots, OG tags, QR codes. */
 export const SITE_URL = "https://myfarmhouse.vercel.app";
 
+/**
+ * Price.
+ *
+ * Held as separate fields because the price appears in three different
+ * notations, and they used to be retyped by hand in ~12 places. The first real
+ * price change (21 -> 24 lakhs) is what proved that a single `price` string was
+ * not enough: the numeric form is needed for schema.org, and the abbreviated
+ * form for meta descriptions and share text.
+ *
+ * Change `price` and `priceNumeric` together, then run `npm run assets` to
+ * regenerate the images. `npm test` fails if the two ever disagree.
+ */
+export const price = {
+  /** Full display form, e.g. "₹24,00,000". Shown on cards, posters, JSON-LD. */
+  display: "₹24,00,000",
+  /** Integer rupees for schema.org offers and any numeric comparison. */
+  numeric: 2400000,
+  /** "Starting ₹24 Lakhs" - headline form for hero and social copy. */
+  headline: "Starting ₹24 Lakhs",
+  /** "₹24L" - compact form for meta descriptions, badges, share text. */
+  short: "₹24L",
+  /** "₹24 Lakhs onwards" - range form used in enquiry messages. */
+  onwards: "₹24 Lakhs onwards",
+} as const;
+
 export const business = {
   brand: "Bright Properties",
   /** Short marketing name shown in the navbar / footer / posters. */
@@ -21,8 +46,6 @@ export const business = {
   project: "Green Orchid Farm Land",
   type: "HMDA Approved 1BHK Farmhouse",
   area: "Kothur, Hyderabad",
-  price: "₹21,00,000",
-  priceLabel: "Starting ₹21 Lakhs",
   currency: "₹",
 } as const;
 
@@ -68,11 +91,11 @@ export const location = {
  */
 export const seo = {
   title: "1BHK Farmhouse for Sale near Kothur, Hyderabad | HMDA Approved",
-  description:
-    "HMDA approved 1BHK farmhouse near Kothur on NH-44, Hyderabad. 121 sq.yards plot, pool, club house, gated. From ₹21L. Call 95059 03371.",
+  // Interpolated from `price` so a price change cannot miss this string, which
+  // is the single most-read text on the whole site.
+  description: `HMDA approved 1BHK farmhouse near Kothur on NH-44, Hyderabad. 121 sq.yards plot, pool, club house, gated. From ${price.short}. Call 95059 03371.`,
   ogImage: "/og/og-image.jpg",
-  ogImageAlt:
-    "Green Orchid Farm Land - HMDA approved 1BHK farmhouse near JP Dargah, Kothur, Hyderabad. Starting ₹21,00,000.",
+  ogImageAlt: `${business.project} - ${business.type} near JP Dargah, Kothur, Hyderabad. Starting ${price.display}.`,
 } as const;
 
 /** Build a wa.me deep link, optionally with a prefilled message. */

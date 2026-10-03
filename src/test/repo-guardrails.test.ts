@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { price } from "../config/site";
 
 /**
  * A repo-wide guard.
@@ -30,7 +31,7 @@ const FORBIDDEN = [
   },
 ];
 
-const SCAN_EXTENSIONS = new Set([".ts", ".tsx", ".js", ".jsx", ".html", ".xml", ".txt", ".json", ".css"]);
+const SCAN_EXTENSIONS = new Set([".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".html", ".xml", ".txt", ".json", ".css"]);
 
 const SKIP_DIRECTORIES = new Set([
   "node_modules",
@@ -40,6 +41,31 @@ const SKIP_DIRECTORIES = new Set([
   "coverage",
   "scripts",
 ]);
+
+/**
+ * The price is rendered into pixels, so the asset scripts repeat it. They are
+ * excluded from the scan above because they legitimately enumerate retired
+ * domains, but a stale price in them is never legitimate - so they are scanned
+ * for prices separately, with "scripts" included.
+ */
+const PRICE_SKIP_DIRECTORIES = new Set(
+  [...SKIP_DIRECTORIES].filter((dir) => dir !== "scripts"),
+);
+
+/**
+ * The project sold at 21 lakhs before moving to 24. Nothing should still
+ * advertise 21: a visitor who sees both numbers cannot tell which is real, and
+ * the cheaper one is the one that gets them excited.
+ */
+const STALE_PRICES = [
+  "21,00,000",
+  "2100000",
+  "₹21",
+  "Rs 21",
+  "Rs. 21",
+  "21 Lakhs",
+  "21L",
+];
 
 /**
  * This file necessarily contains the strings it forbids, so exclude itself
@@ -52,12 +78,16 @@ const isTestFile = (file: string) => {
   return normalised === SELF.split(path.sep).join("/") || normalised.includes("/src/test/");
 };
 
-function collectFiles(dir: string, out: string[] = []): string[] {
+function collectFiles(
+  dir: string,
+  skip: Set<string> = SKIP_DIRECTORIES,
+  out: string[] = [],
+): string[] {
   for (const entry of readdirSync(dir)) {
-    if (SKIP_DIRECTORIES.has(entry)) continue;
+    if (skip.has(entry)) continue;
     const full = path.join(dir, entry);
     if (statSync(full).isDirectory()) {
-      collectFiles(full, out);
+      collectFiles(full, skip, out);
     } else if (
       SCAN_EXTENSIONS.has(path.extname(entry)) &&
       !isTestFile(full)
@@ -104,5 +134,105 @@ describe("repository guardrails", () => {
       .filter((f) => readFileSync(f, "utf-8").includes("vite.svg"));
 
     expect(offenders.map((f) => path.relative(ROOT, f))).toEqual([]);
+  });
+});
+
+/**
+ * The price cannot be verified by reading the source alone, because a large
+ * part of it is baked into generated images. These guards cover the two places
+ * the number can silently go stale: a hand-edited literal, and an asset script
+ * that no longer agrees with src/config/site.ts.
+ */
+describe("pricing stays canonical", () => {
+  const priceFiles = collectFiles(ROOT, PRICE_SKIP_DIRECTORIES);
+
+  it("finds the price-bearing sources to scan", () => {
+    // Includes scripts/, which the retired-domain scan skips.
+    expect(
+      priceFiles.some((f) => f.replace(/\\/g, "/").endsWith("generate-posters.mjs")),
+    ).toBe(true);
+  });
+
+  for (const needle of STALE_PRICES) {
+    it(`no longer advertises "${needle}"`, () => {
+      const offenders = priceFiles.filter((file) =>
+        readFileSync(file, "utf-8").includes(needle),
+      );
+      expect(
+        offenders.map((f) => path.relative(ROOT, f).replace(/\\/g, "/")),
+      ).toEqual([]);
+    });
+  }
+
+  it("has exactly one source of truth for the price", () => {
+    // price.display must appear as an imported binding, never as a literal
+    // typed into a component.
+    const literals = priceFiles
+      .filter((f) => f.replace(/\\/g, "/").includes("/src/"))
+      .filter((f) => readFileSync(f, "utf-8").includes(`"${price.display}"`));
+
+    expect(literals.map((f) => path.relative(ROOT, f).replace(/\\/g, "/"))).toEqual([
+      "src/config/site.ts",
+    ]);
+  });
+
+  // Both asset scripts render the price as pixels, which no amount of source
+  // review would catch. Each declares the exact canonical strings it draws.
+  const ASSET_SCRIPT_EXPECTATIONS: Record<string, string[]> = {
+    "scripts/generate-assets.mjs": [
+      `PRICE_DISPLAY = "${price.display}"`,
+      `PRICE_SHORT = "${price.short}"`,
+    ],
+    "scripts/generate-posters.mjs": [
+      `PRICE_DISPLAY = "${price.display}"`,
+      `PRICE_HEADLINE = "${price.headline}"`,
+    ],
+  };
+
+  for (const [script, declarations] of Object.entries(ASSET_SCRIPT_EXPECTATIONS)) {
+    it(`keeps ${script} in sync with src/config/site.ts`, () => {
+      const src = readFileSync(path.join(ROOT, script), "utf-8");
+      for (const declaration of declarations) {
+        expect(src).toContain(declaration);
+      }
+    });
+  }
+
+  it("index.html quotes the current price", () => {
+    const html = readFileSync(path.join(ROOT, "index.html"), "utf-8");
+    expect(html).toContain(price.display);
+    expect(html).toContain(price.short);
+  });
+
+  it("serves the price-bearing posters from /generated", () => {
+    // public/posters/ keeps the hand-made originals that still say 21 lakhs.
+    // They are only a photo source now; nothing may link to them.
+    const offenders = priceFiles
+      .filter((f) => f.replace(/\\/g, "/").includes("/src/"))
+      .filter((f) =>
+        /\/posters\/(farmhouse|weekend-houses)\.(webp|jpe?g)/.test(
+          readFileSync(f, "utf-8"),
+        ),
+      );
+
+    expect(offenders.map((f) => path.relative(ROOT, f).replace(/\\/g, "/"))).toEqual([]);
+  });
+
+  it("keeps the regenerated posters committed", () => {
+    for (const poster of ["farmhouse", "weekend-houses"]) {
+      expect(
+        statSync(path.join(ROOT, `public/generated/${poster}.jpg`)).size,
+      ).toBeGreaterThan(10000);
+    }
+  });
+
+  it("does not advertise a discount that does not exist", () => {
+    // "Was 24L" became false advertising once 24 lakhs became the real price.
+    const offenders = priceFiles.filter((file) =>
+      /was\s*₹?\s*24/i.test(readFileSync(file, "utf-8")),
+    );
+    expect(
+      offenders.map((f) => path.relative(ROOT, f).replace(/\\/g, "/")),
+    ).toEqual([]);
   });
 });

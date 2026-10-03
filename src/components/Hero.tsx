@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { business, contacts } from "../config/site";
+import { business, contacts, price } from "../config/site";
 import { trackEvent } from "../lib/analytics";
 import { enquiryMessage } from "../lib/cta";
 import { whatsappLink } from "../config/site";
@@ -52,7 +52,7 @@ export function Hero({ onViewProperties }: Props) {
           <p className="text-slate-300 text-lg md:text-xl mb-8 max-w-2xl mx-auto">
             Your dream farmhouse awaits 🏡 — gated community with swimming pool
             &amp; club house on Bangalore Highway NH-44, starting{" "}
-            <strong className="text-emerald-400">{business.price}</strong>
+            <strong className="text-emerald-400">{price.display}</strong>
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

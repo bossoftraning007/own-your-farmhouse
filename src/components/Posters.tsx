@@ -9,17 +9,20 @@ import {
   whatsappShare,
 } from "../lib/share";
 
+// Served from /generated, not /posters: these carry the price as pixels, and
+// only the generated ones are rebuilt from the current price. The originals in
+// /posters are kept as the photo source and are stale.
 const posters = [
   {
-    full: "/posters/farmhouse.webp",
-    posterJpeg: "/posters/farmhouse.jpeg",
+    full: "/generated/farmhouse.webp",
+    posterJpeg: "/generated/farmhouse.jpg",
     alt: "Green Orchid Farm Land farmhouse marketing poster",
     downloadName: "green-orchid-farmhouse.jpg",
     title: "Farmhouse",
   },
   {
-    full: "/posters/weekend-houses.webp",
-    posterJpeg: "/posters/weekend-houses.jpg",
+    full: "/generated/weekend-houses.webp",
+    posterJpeg: "/generated/weekend-houses.jpg",
     alt: "Green Orchid Farm Land weekend houses marketing poster",
     downloadName: "green-orchid-weekend-houses.jpg",
     title: "Weekend Houses",

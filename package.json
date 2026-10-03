@@ -13,8 +13,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "assets": "node scripts/generate-assets.mjs",
-    "assets:verify": "node scripts/generate-assets.mjs --verify-only",
+    "assets": "node scripts/generate-assets.mjs && node scripts/generate-posters.mjs",
+    "assets:verify": "node scripts/generate-assets.mjs --verify-only && node scripts/verify-posters.mjs",
     "check": "npm run lint && npm run typecheck && npm run test && npm run build"
   },
   "dependencies": {

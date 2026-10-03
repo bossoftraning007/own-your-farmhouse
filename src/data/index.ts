@@ -1,3 +1,5 @@
+import { price } from "../config/site";
+
 export interface Property {
   id: string;
   name: string;
@@ -35,8 +37,8 @@ export const properties: Property[] = [
   {
     id: "1bhk-farmhouse",
     name: "1BHK Farmhouse",
-    price: 2100000,
-    priceLabel: "₹21,00,000",
+    price: price.numeric,
+    priceLabel: price.display,
     plot: "121 sq.yards",
     house: "350 sq.ft",
     bhk: "1BHK",
@@ -51,20 +53,24 @@ export const properties: Property[] = [
       "Pattadar pass book ready",
     ],
     image: {
-      full: "/posters/farmhouse.webp",
-      small: "/posters/farmhouse-sm.webp",
+      full: "/generated/farmhouse.webp",
+      small: "/generated/farmhouse-sm.webp",
       alt: "1BHK farmhouse exterior at Green Orchid Farm Land, Kothur",
     },
   },
   {
     id: "weekend-house",
     name: "Weekend House",
-    price: 2100000,
-    priceLabel: "₹21,00,000",
+    price: price.numeric,
+    priceLabel: price.display,
     plot: "121 sq.yards",
     house: "350 sq.ft",
     bhk: "1BHK",
-    badge: "Was ₹24L",
+    // No discount badge here on purpose. The old badge claimed the unit was
+    // reduced from 24 lakhs, which stopped being true the moment 24 lakhs
+    // became the asking price. Only re-add one for a price genuinely charged
+    // before this one.
+    badge: undefined,
     featured: false,
     highlights: [
       "Ideal for weekly family getaways",
@@ -75,8 +81,8 @@ export const properties: Property[] = [
       "Compound wall and arch entrance",
     ],
     image: {
-      full: "/posters/weekend-houses.webp",
-      small: "/posters/weekend-houses-sm.webp",
+      full: "/generated/weekend-houses.webp",
+      small: "/generated/weekend-houses-sm.webp",
       alt: "Weekend house plot at Green Orchid Farm Land near Kothur",
     },
   },
@@ -90,8 +96,8 @@ export const galleryImages = [
     label: "🏛️ Club House",
   },
   {
-    full: "/posters/farmhouse.webp",
-    small: "/posters/farmhouse-sm.webp",
+    full: "/generated/farmhouse.webp",
+    small: "/generated/farmhouse-sm.webp",
     alt: "Farmhouse at Green Orchid Farm Land, Kothur",
     label: "🏡 Farmhouse",
   },
@@ -165,7 +171,7 @@ export const faqs = [
   },
   {
     q: "What is included in the price?",
-    a: "The 1BHK farmhouse unit at ₹21,00,000 includes a 121 sq.yards plot with a 350 sq.ft house, plus 2 years of free maintenance and access to the pool, club house and gated community amenities.",
+    a: `The 1BHK farmhouse unit at ${price.display} includes a 121 sq.yards plot with a 350 sq.ft house, plus 2 years of free maintenance and access to the pool, club house and gated community amenities.`,
   },
   {
     q: "How far is it from Hyderabad airport?",

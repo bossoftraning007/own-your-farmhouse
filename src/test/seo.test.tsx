@@ -4,7 +4,7 @@ import path from "node:path";
 import { render } from "@testing-library/react";
 import App from "../App";
 import { Seo } from "../components/Seo";
-import { seo, SITE_URL } from "../config/site";
+import { price, seo, SITE_URL } from "../config/site";
 import { faqs } from "../data";
 
 /**
@@ -135,7 +135,7 @@ describe("structured data", () => {
     const product = ld["@graph"].find(
       (n: { "@type": string }) => n["@type"] === "Product",
     );
-    expect(product.offers.price).toBe("2100000");
+    expect(product.offers.price).toBe(String(price.numeric));
     expect(product.offers.priceCurrency).toBe("INR");
     expect(product.offers.availability).toContain("InStock");
   });

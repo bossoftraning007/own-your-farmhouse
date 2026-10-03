@@ -6,7 +6,7 @@ import { Faq } from "../components/Faq";
 import { LeadForm } from "../components/LeadForm";
 import App from "../App";
 import { navItems, properties } from "../data";
-import { contacts } from "../config/site";
+import { contacts, price } from "../config/site";
 
 describe("Navbar", () => {
   it("keeps nav links hidden on mobile until the menu is opened", async () => {
@@ -225,8 +225,16 @@ describe("property pricing", () => {
   it("keeps every advertised price at the advertised starting price", () => {
     // The posters, SEO tags and cards must never quote different numbers.
     for (const property of properties) {
-      expect(property.priceLabel).toMatch(/^₹21,00,000$/);
-      expect(property.price).toBe(2100000);
+      expect(property.priceLabel).toBe(price.display);
+      expect(property.price).toBe(price.numeric);
+    }
+  });
+
+  it("does not advertise a discount against the real price", () => {
+    // A "Was 24L" badge would be false advertising now that 24 lakhs is the
+    // price being asked, and it is the kind of claim that draws complaints.
+    for (const property of properties) {
+      expect(property.badge ?? "").not.toMatch(/was\s*₹?\s*24/i);
     }
   });
 });
@@ -243,7 +251,7 @@ describe("page structure", () => {
 
   it("shows the price and the primary phone number to visitors", () => {
     render(<App />);
-    expect(screen.getAllByText(/₹21,00,000/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(new RegExp(price.display.replace(/[₹,]/g, "\\$&"))).length).toBeGreaterThan(0);
     expect(
       screen.getAllByRole("link", { name: /95059 03371/i }).length,
     ).toBeGreaterThan(0);
