@@ -15,6 +15,7 @@
  * enough to verify wiring in devtools without shipping analytics to nobody.
  */
 
+/** Injected by Vite at build time. Console log confirms it reached the bundle. */
 const MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID as
   | string
   | undefined;
@@ -30,9 +31,52 @@ declare global {
   }
 }
 
+/**
+ * dataLayer entries must be array-like `arguments` objects.
+ *
+ * Rest parameters produce a real `Array`, and gtag.js silently ignores those -
+ * so the `config` command never becomes a page_view and NO collect request is
+ * ever sent. The symptom is a measurement ID that is present in the bundle,
+ * gtag.js loading with a 200, an apparently healthy dataLayer... and a GA4
+ * property that reports zero users forever.
+ *
+ * Verified in headless Chrome against the same measurement ID:
+ *   push(arguments) -> 2 collect requests (204)
+ *   push(array)      -> 0 collect requests
+ *
+ * Declared with no parameters so `arguments` is the real arguments object.
+ * Assigning it to `window.gtag` is fine: a function taking no arguments is
+ * assignable to the wider gtag signature.
+ */
+function pushToDataLayer(): void {
+  // eslint-disable-next-line prefer-rest-params
+  window.dataLayer?.push(arguments as unknown as unknown[]);
+}
+
 /** Inject the GA4 loader. Safe to call repeatedly. */
 export function initAnalytics(): void {
-  if (loaded || !MEASUREMENT_ID || typeof window === "undefined") return;
+  // Diagnostic logs. `import.meta.env.VITE_GA_MEASUREMENT_ID` is substituted
+  // at build time, so these prove whether the env var reached the build.
+  console.info(
+    "[analytics] resolved VITE_GA_MEASUREMENT_ID =",
+    JSON.stringify(MEASUREMENT_ID),
+  );
+
+  if (loaded) {
+    console.info("[analytics] already initialised, skipping");
+    return;
+  }
+  if (!MEASUREMENT_ID) {
+    console.warn(
+      "[analytics] no VITE_GA_MEASUREMENT_ID - set it in Vercel (Settings > Environment Variables) and redeploy",
+    );
+    return;
+  }
+  if (typeof window === "undefined") {
+    console.warn("[analytics] no window object, skipping");
+    return;
+  }
+
   loaded = true;
 
   const script = document.createElement("script");
@@ -41,11 +85,19 @@ export function initAnalytics(): void {
   document.head.appendChild(script);
 
   window.dataLayer = window.dataLayer || [];
-  window.gtag = (...args: GtagArgs) => window.dataLayer?.push(args);
+  window.gtag = pushToDataLayer;
   window.gtag("js", new Date());
   window.gtag("config", MEASUREMENT_ID, {
     send_page_view: true,
   });
+
+  console.info("[analytics] gtag config called ->", MEASUREMENT_ID);
+  console.info(
+    "[analytics] script tag src =",
+    script.src,
+    "| in head:",
+    document.head.contains(script),
+  );
 }
 
 export function isAnalyticsEnabled(): boolean {
