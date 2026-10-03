@@ -28,7 +28,7 @@ create policy "owners read content"
   on public.site_content for select
   using (auth.jwt() ->> 'email') in (
     'premcharantejtej@gmail.com',
-    'rasamallaganesh07@gmail.com'
+    'rasamallaganesh71@gmail.com'
   );
 
 drop policy if exists "owners write content" on public.site_content;
@@ -36,7 +36,7 @@ create policy "owners write content"
   on public.site_content for insert
   with check ((auth.jwt() ->> 'email') in (
     'premcharantejtej@gmail.com',
-    'rasamallaganesh07@gmail.com'
+    'rasamallaganesh71@gmail.com'
   ));
 
 drop policy if exists "owners update content" on public.site_content;
@@ -44,11 +44,11 @@ create policy "owners update content"
   on public.site_content for update
   using ((auth.jwt() ->> 'email') in (
     'premcharantejtej@gmail.com',
-    'rasamallaganesh07@gmail.com'
+    'rasamallaganesh71@gmail.com'
   ))
   with check ((auth.jwt() ->> 'email') in (
     'premcharantejtej@gmail.com',
-    'rasamallaganesh07@gmail.com'
+    'rasamallaganesh71@gmail.com'
   ));
 
 -- Gallery uploads --------------------------------------------------------------
@@ -65,7 +65,7 @@ create policy "owners upload gallery"
     bucket_id = 'gallery'
     and (auth.jwt() ->> 'email') in (
       'premcharantejtej@gmail.com',
-      'rasamallaganesh07@gmail.com'
+      'rasamallaganesh71@gmail.com'
     )
   );
 
@@ -77,7 +77,7 @@ create policy "owners delete gallery"
     bucket_id = 'gallery'
     and (auth.jwt() ->> 'email') in (
       'premcharantejtej@gmail.com',
-      'rasamallaganesh07@gmail.com'
+      'rasamallaganesh71@gmail.com'
     )
   );
 

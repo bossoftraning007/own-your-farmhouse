@@ -226,6 +226,8 @@ function CampaignsPanel() {
   }
 
   const posters = [
+    { full: "/generated/dussehra-offer.jpg", jpeg: "/generated/dussehra-offer.jpg", name: "dussehra-offer.jpg" },
+    { full: "/generated/farmhouse-24-lakhs.jpg", jpeg: "/generated/farmhouse-24-lakhs.jpg", name: "farmhouse-24-lakhs.jpg" },
     { full: "/generated/farmhouse.webp", jpeg: "/generated/farmhouse.jpg", name: "green-orchid-farmhouse.jpg" },
     { full: "/generated/weekend-houses.webp", jpeg: "/generated/weekend-houses.jpg", name: "green-orchid-weekend-houses.jpg" },
   ];

@@ -17,7 +17,7 @@ const env = import.meta.env;
  */
 export const ALLOWED_EMAILS = [
   "premcharantejtej@gmail.com",
-  "rasamallaganesh07@gmail.com",
+  "rasamallaganesh71@gmail.com",
 ] as const;
 
 export const SUPABASE_URL = env.VITE_SUPABASE_URL ?? "";

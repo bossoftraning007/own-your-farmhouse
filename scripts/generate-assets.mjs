@@ -321,6 +321,12 @@ async function verifyAssetReferences() {
     "generated/weekend-houses.jpg",
     "generated/weekend-houses.webp",
     "generated/weekend-houses-sm.webp",
+    // Hand-designed by the owner and committed as-is. The price is baked into
+    // these as pixels, so unlike the generated posters above they CANNOT be
+    // rebuilt by `npm run assets` - a price change means replacing these two
+    // files by hand. They are checked here so a missing file fails the build.
+    "generated/dussehra-offer.jpg",
+    "generated/farmhouse-24-lakhs.jpg",
     // Display images: webp for the page, jpeg kept for downloads and OG tags
     "posters/clubhouse.webp",
     "posters/clubhouse-sm.webp",

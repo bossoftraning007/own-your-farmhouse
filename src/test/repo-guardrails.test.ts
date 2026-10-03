@@ -270,6 +270,17 @@ describe("pricing stays canonical", () => {
     }
   });
 
+  it("keeps the owner's hand-designed campaign posters committed", () => {
+    // These two are not rebuilt by `npm run assets` - the price is pixels in a
+    // hand-made design. On a price change they must be replaced by hand, and
+    // this is the reminder that they exist and are worth checking.
+    for (const poster of ["dussehra-offer", "farmhouse-24-lakhs"]) {
+      expect(
+        statSync(path.join(ROOT, `public/generated/${poster}.jpg`)).size,
+      ).toBeGreaterThan(10000);
+    }
+  });
+
   it("does not advertise a discount that does not exist", () => {
     // "Was 24L" became false advertising once 24 lakhs became the real price.
     const offenders = priceFiles.filter((file) =>

@@ -15,7 +15,7 @@ describe("admin allowlist", () => {
 it("permits exactly the two owner accounts", () => {
     expect([...ALLOWED_EMAILS]).toEqual([
       "premcharantejtej@gmail.com",
-      "rasamallaganesh07@gmail.com",
+      "rasamallaganesh71@gmail.com",
     ]);
   });
 

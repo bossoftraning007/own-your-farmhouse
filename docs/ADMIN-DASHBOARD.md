@@ -5,7 +5,7 @@ Lives at **`/#/admin`** — the *Admin* link in the site footer.
 Restricted to exactly two accounts:
 
 - `premcharantejtej@gmail.com`
-- `rasamallaganesh07@gmail.com`
+- `rasamallaganesh71@gmail.com`
 
 Sign-in is a one-time email link (no password). From there you can copy the
 WhatsApp campaign messages, download the posters, edit the words on the offer
