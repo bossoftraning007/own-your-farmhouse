@@ -4,6 +4,7 @@ import {
   contacts,
   directionsLink,
   location,
+  price,
   SITE_URL,
   whatsappLink,
 } from "../config/site";
@@ -74,5 +75,23 @@ describe("site config", () => {
     expect(location.latitude).toBeLessThan(17.5);
     expect(location.longitude).toBeGreaterThan(78);
     expect(location.longitude).toBeLessThan(78.5);
+  });
+});
+
+/**
+ * The price object holds one number in five notations. Nothing derives one
+ * from another, so editing `display` alone would leave `numeric` advertising
+ * the old figure to Google while the page shows the new one.
+ */
+describe("price", () => {
+  it("keeps the numeric form equal to the display form", () => {
+    expect(Number(price.display.replace(/\D/g, ""))).toBe(price.numeric);
+  });
+
+  it("agrees across the abbreviated notations", () => {
+    const lakhs = Number(price.short.replace(/\D/g, ""));
+    expect(lakhs * 100000).toBe(price.numeric);
+    expect(price.headline).toContain(String(lakhs));
+    expect(price.onwards).toContain(String(lakhs));
   });
 });

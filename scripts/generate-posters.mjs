@@ -13,7 +13,7 @@
  * Run: npm run assets
  */
 
-import { mkdir, readFile, writeFile, stat } from "node:fs/promises";
+import { mkdir, readFile, stat } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -22,13 +22,17 @@ import QRCode from "qrcode";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
-const POSTERS = path.join(ROOT, "public", "posters");
-const QR_DIR = path.join(ROOT, "public", "qr");
+/**
+ * Source photos live outside public/ on purpose. The hand-made originals in
+ * here are priced at the old rate; keeping them in public/ would keep serving
+ * them at stable /posters/* URLs next to the new price, which is the exact
+ * two-different-numbers problem this script exists to prevent.
+ */
+const POSTERS = path.join(ROOT, "assets", "posters");
 const OUT = path.join(ROOT, "public", "generated");
 
 /** Must match src/config/site.ts. Enforced by the test suite. */
 const PRICE_DISPLAY = "₹24,00,000";
-const PRICE_HEADLINE = "Starting ₹24 Lakhs";
 const BRAND = "BRIGHT PROPERTIES";
 const PROJECT = "GREEN ORCHID FARM LAND";
 const WHATSAPP_NUMBER = "919505903371";
@@ -148,7 +152,8 @@ async function generatePosters() {
   if (!existsSync(OUT)) await mkdir(OUT, { recursive: true });
 
   // One QR, reused on every poster: a scan lands on the site, where the phone
-  // number and every photo live.
+  // number and every photo live. Encoded straight from memory - writing it to
+  // public/qr first would ship a file nothing reads.
   const qrPng = await QRCode.toBuffer(`https://wa.me/${WHATSAPP_NUMBER}`, {
     type: "png",
     width: 240,
@@ -156,10 +161,7 @@ async function generatePosters() {
     color: { dark: "#0f172a", light: "#ffffff" },
     errorCorrectionLevel: "H",
   });
-  await writeFile(path.join(QR_DIR, "poster-qr.png"), qrPng);
-  const qrBase64 = (await readFile(path.join(QR_DIR, "poster-qr.png"))).toString(
-    "base64",
-  );
+  const qrBase64 = qrPng.toString("base64");
 
   for (const spec of POSTER_SPECS) {
     const photoPath = path.join(POSTERS, spec.photo);

@@ -183,10 +183,7 @@ describe("pricing stays canonical", () => {
       `PRICE_DISPLAY = "${price.display}"`,
       `PRICE_SHORT = "${price.short}"`,
     ],
-    "scripts/generate-posters.mjs": [
-      `PRICE_DISPLAY = "${price.display}"`,
-      `PRICE_HEADLINE = "${price.headline}"`,
-    ],
+    "scripts/generate-posters.mjs": [`PRICE_DISPLAY = "${price.display}"`],
   };
 
   for (const [script, declarations] of Object.entries(ASSET_SCRIPT_EXPECTATIONS)) {
@@ -205,8 +202,9 @@ describe("pricing stays canonical", () => {
   });
 
   it("serves the price-bearing posters from /generated", () => {
-    // public/posters/ keeps the hand-made originals that still say 21 lakhs.
-    // They are only a photo source now; nothing may link to them.
+    // The hand-made originals are priced at the old rate. They live outside
+    // public/ as photo sources only; nothing may link to a /posters/ path for
+    // them, and nothing may publish them.
     const offenders = priceFiles
       .filter((f) => f.replace(/\\/g, "/").includes("/src/"))
       .filter((f) =>
@@ -216,6 +214,25 @@ describe("pricing stays canonical", () => {
       );
 
     expect(offenders.map((f) => path.relative(ROOT, f).replace(/\\/g, "/"))).toEqual([]);
+  });
+
+  it("does not publish the superseded price-bearing originals", () => {
+    // A file left in public/ keeps being served at a stable URL by Vercel even
+    // after every in-app reference moves away, so a shared or indexed link
+    // still shows the retired price. They belong in assets/posters/.
+    const published = path.join(ROOT, "public", "posters");
+    const offenders = readdirSync(published).filter((f) =>
+      /^(farmhouse|weekend-houses)\./i.test(f),
+    );
+
+    expect(offenders).toEqual([]);
+  });
+
+  it("keeps the unpublished originals available as photo sources", () => {
+    // Moving them out of public/ must not delete the only copy of the photo.
+    for (const original of ["farmhouse.jpeg", "weekend-houses.jpg"]) {
+      expect(statSync(path.join(ROOT, "assets", "posters", original)).size).toBeGreaterThan(10000);
+    }
   });
 
   it("keeps the regenerated posters committed", () => {

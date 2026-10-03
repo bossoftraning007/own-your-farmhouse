@@ -17,14 +17,19 @@ export const SITE_URL = "https://myfarmhouse.vercel.app";
 /**
  * Price.
  *
- * Held as separate fields because the price appears in three different
+ * Held as separate fields because the price appears in several different
  * notations, and they used to be retyped by hand in ~12 places. The first real
  * price change (21 -> 24 lakhs) is what proved that a single `price` string was
  * not enough: the numeric form is needed for schema.org, and the abbreviated
  * form for meta descriptions and share text.
  *
- * Change `price` and `priceNumeric` together, then run `npm run assets` to
- * regenerate the images. `npm test` fails if the two ever disagree.
+ * Change `display`, `numeric`, `headline`, `short` and `onwards` together -
+ * they describe one number in five notations and none of them can be derived
+ * from another reliably. `numeric` is asserted against `display` by the test
+ * suite so the two cannot drift.
+ *
+ * Then run `npm run assets` to regenerate the images. The price is rendered
+ * into poster pixels, so source edits alone do not update them.
  */
 export const price = {
   /** Full display form, e.g. "₹24,00,000". Shown on cards, posters, JSON-LD. */
