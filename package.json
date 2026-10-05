@@ -15,7 +15,8 @@
     "test:coverage": "vitest run --coverage",
     "assets": "node scripts/generate-assets.mjs && node scripts/generate-posters.mjs",
     "assets:verify": "node scripts/generate-assets.mjs --verify-only && node scripts/verify-posters.mjs",
-    "check": "npm run lint && npm run typecheck && npm run test && npm run build"
+    "verify:schema": "node scripts/verify-schema.mjs",
+    "check": "npm run lint && npm run typecheck && npm run test && npm run verify:schema && npm run build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",
@@ -24,6 +25,7 @@
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
     "@eslint/js": "^10.0.1",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",

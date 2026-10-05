@@ -40,6 +40,47 @@ owner emails.
 > what stop anyone from reading or rewriting your content with that key. Skip
 > this and your content is editable by anyone who opens devtools.
 
+#### The schema has been corrected — check you have the fixed version
+
+The first version of `schema.sql` shipped with a syntax error and could not be
+run at all. The `owners read content` policy closed its parentheses after
+`auth.jwt() ->> 'email'`, leaving `in (...)` dangling outside the clause:
+
+```sql
+-- broken, fails with: syntax error at or near "in"
+using (auth.jwt() ->> 'email') in ( 'a@b.com', 'c@d.com' );
+```
+
+The clause delimiter must wrap the whole condition:
+
+```sql
+-- correct
+using ((auth.jwt() ->> 'email') in ( 'a@b.com', 'c@d.com' ));
+```
+
+Two things changed beyond that one line:
+
+- **RLS is now enabled on `storage.objects` explicitly.** Previously it relied on
+  Supabase enabling it by default. Had that default ever differed, the storage
+  policies would have been stored but never evaluated — leaving uploads and
+  deletes open to any signed-in account with no error anywhere.
+- Both fixes are now covered by tests, so the file cannot silently regress.
+
+Verify the copy in this repo before you run it:
+
+```bash
+npm run verify:schema
+```
+
+That executes the file against a real Postgres and then attempts reads, writes,
+uploads and deletes as an owner, a stranger and an anonymous visitor. It should
+end with `RESULT: schema.sql runs cleanly and the policies enforce the
+allowlist`. It runs as part of `npm run check`.
+
+> If you already ran a corrected version by hand, the live policies are fine —
+> but this file and the live database should match, or the next person to run it
+> from the repo hits the error.
+
 ### 3. Copy the two keys
 
 **Project Settings → API**. Copy:

@@ -23,13 +23,18 @@ alter table public.site_content enable row level security;
 
 -- Only the two owners may read or write. Replace these two addresses with your
 -- own if they change.
+--
+-- Note the double parentheses in the USING clause below: the outer pair is the
+-- clause delimiter, the inner pair groups the expression. Wrapping only
+-- `auth.jwt() ->> 'email'` and leaving `in (...)` outside it is a syntax error
+-- at or near "in".
 drop policy if exists "owners read content" on public.site_content;
 create policy "owners read content"
   on public.site_content for select
-  using (auth.jwt() ->> 'email') in (
+  using ((auth.jwt() ->> 'email') in (
     'premcharantejtej@gmail.com',
     'rasamallaganesh71@gmail.com'
-  );
+  ));
 
 drop policy if exists "owners write content" on public.site_content;
 create policy "owners write content"
@@ -52,6 +57,13 @@ create policy "owners update content"
   ));
 
 -- Gallery uploads --------------------------------------------------------------
+-- RLS is enabled explicitly rather than relied upon from Supabase's default.
+-- Without it the policies below are parsed and stored but never evaluated,
+-- which means every signed-in account could upload and delete freely - and
+-- nothing would report an error. Belt and braces on the one table whose
+-- protection is not enforced by this file's own DDL.
+alter table storage.objects enable row level security;
+
 insert into storage.buckets (id, name, public)
 values ('gallery', 'gallery', true)
 on conflict (id) do nothing;
